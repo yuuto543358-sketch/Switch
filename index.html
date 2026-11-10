@@ -23,6 +23,7 @@
   <div id="fx-grain"></div>
   <div id="fade"></div>
 
+  <div id="photo"><div class="ph"><div class="ph-f"><canvas width="160" height="120"></canvas></div><div class="ph-b"><b>蓮と。　——美咲</b><i>11 . 17</i></div></div></div>
   <div id="card" aria-live="polite"></div>
   <div id="note" aria-live="polite"></div>
   <div id="tapcatch"></div>
@@ -46,6 +47,7 @@
       <div class="t-menu">
         <button data-act="new">はじめから</button>
         <button data-act="continue">つづきから</button>
+        <button data-act="chapters">チャプター</button>
         <button data-act="settings">設定</button>
       </div>
     </div>
@@ -61,6 +63,7 @@
       <p class="e-log"></p>
       <p class="e-next"></p>
       <div class="e-menu">
+        <button data-act="next">つづきへ</button>
         <button data-act="replay">もう一度あそぶ</button>
         <button data-act="title">タイトルへ</button>
       </div>
@@ -74,6 +77,15 @@
       <button data-act="resume">ゲームにもどる</button>
       <button data-act="settings">設定</button>
       <button data-act="title">セーブしてタイトルへ</button>
+    </div>
+  </div>
+
+  <!-- チャプター選択 -->
+  <div id="chapters" class="modal">
+    <div class="m-box">
+      <h3>CHAPTER</h3>
+      <div class="ch-list"></div>
+      <button data-act="close">とじる</button>
     </div>
   </div>
 
@@ -102,6 +114,7 @@
 <script src="js/core/scene.js"></script>
 <script src="js/core/ui.js"></script>
 <script src="js/chapters/ch01.js"></script>
+<script src="js/chapters/ch02.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

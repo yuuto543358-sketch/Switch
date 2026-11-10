@@ -103,7 +103,7 @@
     },
     chime: function (t, out, o) {
       var k = (o && o.detune) ? Math.pow(2, o.detune / 1200) : 1, slow = (o && o.slow) || 1;
-      var sp = filt('bandpass', 1400, 0.35, out);
+      var sp = (o && o.muffle) ? filt('lowpass', 420, 0.7, gain(1.6, out)) : filt('bandpass', 1400, 0.35, out);
       bell(t, sp, 659.25 * k, 0.5, 0.9 * slow);
       bell(t + 0.62 * slow, sp, 523.25 * k, 0.5, 1.7 * slow);
     },
@@ -123,6 +123,24 @@
       var g2 = gain(0, out); hit(g2, t, 0.3, 0.003, 0.16);
       src(brown, filt('lowpass', 500, 0.5, g2), t, 0.25);
       clickAt(t + 0.42, out, 1.3, 0.2); clickAt(t + 0.5, out, 0.9, 0.3);
+    },
+    /* エレベーターの到着音。far:true で遠くから聞こえる */
+    ding: function (t, out, o) {
+      var far = o && o.far, sp = far ? filt('lowpass', 900, 0.5, gain(0.45, out)) : out;
+      bell(t, sp, 987.8, 0.4, 2.2); bell(t + 0.5, sp, 784, 0.36, 2.6);
+    },
+    elev_door: function (t, out) {
+      var g = gain(0, out); hit(g, t, 0.16, 0.25, 0.95);
+      var f = filt('bandpass', 500, 1.2, g); f.frequency.linearRampToValueAtTime(900, t + 1.1);
+      src(brown, f, t, 1.3);
+      clickAt(t + 1.15, out, 0.6, 0.22);
+    },
+    lock: function (t, out) { clickAt(t, out, 0.75, 0.5); clickAt(t + 0.11, out, 0.5, 0.6); },
+    creak: function (t, out) {
+      var g = gain(0, out); hit(g, t, 0.07, 0.5, 1.5);
+      var f = filt('bandpass', 1150, 14, g);
+      var o = osc('sawtooth', 96, f, t, t + 2.1); o.frequency.linearRampToValueAtTime(128, t + 0.9); o.frequency.linearRampToValueAtTime(84, t + 2);
+      f.frequency.linearRampToValueAtTime(1500, t + 1); f.frequency.linearRampToValueAtTime(980, t + 2);
     },
     tick: function (t, out) { clickAt(t, out, 2.6, 0.1); },
     boom: function (t, out) {
@@ -162,6 +180,27 @@
     static: function (out, t) {
       return [src(crackle, filt('bandpass', 3200, 0.45, gain(0.5, out)), t, 0, true),
               src(white, filt('highpass', 6000, 0.5, gain(0.12, out)), t, 0, true)];
+    },
+    /* 夜の外気：遠い車の音と風 */
+    night: function (out, t) {
+      var w = gain(0.25, out), l = osc('sine', 0.09, gain(0.12, w.gain), t);
+      return [src(brown, filt('lowpass', 240, 0.3, gain(0.6, out)), t, 0, true),
+              src(white, filt('bandpass', 900, 0.4, gain(0.05, w)), t, 0, true), l];
+    },
+    /* エレベーターの巻上機 */
+    elev: function (out, t) {
+      var lp = filt('lowpass', 260, 2, gain(0.5, out));
+      return [osc('sawtooth', 48, lp, t), osc('sawtooth', 96.6, gain(0.3, lp), t),
+              src(brown, filt('bandpass', 380, 1.5, gain(0.25, out)), t, 0, true)];
+    },
+    /* 壁ごしに聞こえるテレビ：こもった人の声のようなもの */
+    tv_muffled: function (out, t) {
+      var lp = filt('lowpass', 520, 0.8, gain(1, out));
+      var v = gain(0.25, lp), f1 = filt('bandpass', 430, 4, v);
+      var a = osc('sawtooth', 118, f1, t), b = osc('sawtooth', 171, gain(0.6, f1), t);
+      var m1 = osc('sine', 3.7, gain(0.22, v.gain), t), m2 = osc('sine', 0.61, gain(0.14, v.gain), t);
+      var p = osc('sine', 0.23, gain(22, a.frequency), t), p2 = osc('sine', 0.31, gain(30, b.frequency), t), fm = osc('sine', 0.9, gain(160, f1.frequency), t);
+      return [a, b, m1, m2, p, p2, fm, src(crackle, filt('bandpass', 700, 0.6, gain(0.1, lp)), t, 0, true)];
     },
     drone: function (out, t) {
       var lp = filt('lowpass', 170, 1.2, gain(0.55, out));

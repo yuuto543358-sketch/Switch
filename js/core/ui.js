@@ -68,7 +68,7 @@
   };
 
   U.reset = function () {
-    U.noteHide(); cardEl.classList.remove('on'); dlg.classList.remove('on', 'wait'); catchEl.classList.remove('on');
+    U.noteHide(); cardEl.classList.remove('on'); $('photo').classList.remove('on', 'show', 'flip'); dlg.classList.remove('on', 'wait'); catchEl.classList.remove('on');
     SW.scene.locked = false;
   };
 })(window.SW);

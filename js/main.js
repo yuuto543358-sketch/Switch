@@ -11,10 +11,11 @@
     SW.epoch++; SW.paused = false;
     if (current && current.stop) current.stop(); current = null;
     A.stopAll(0.3); U.reset(); SW.scene.clear();
-    menuBtn.classList.remove('on'); menu.classList.remove('on'); settings.classList.remove('on');
+    menuBtn.classList.remove('on'); menu.classList.remove('on'); settings.classList.remove('on'); $('chapters').classList.remove('on');
     endcard.classList.remove('on', 'show');
     title.classList.remove('lit', 'flick'); tsw.setAttribute('aria-pressed', 'false');
     title.querySelector('[data-act="continue"]').hidden = !SW.hasSave();
+    title.querySelector('[data-act="chapters"]').hidden = !SW.profile.clears.ch01;
     title.classList.add('on');
   }
   tsw.addEventListener('click', function () {
@@ -35,6 +36,7 @@
     var act = e.target.dataset.act; if (!act) return;
     A.init(); A.se('tick');
     if (act === 'settings') return openSettings();
+    if (act === 'chapters') return openChapters();
     if (act === 'new') { SW.clearSave(); SW.newGame(); }
     if (act === 'continue' && !SW.loadGame()) SW.newGame();
     startChapter();
@@ -54,19 +56,25 @@
 
   function finishChapter(ch) {
     var id = SW.game.chapter, total = SW.switches.playerTotal();
+    var nextId = SW.ORDER[SW.ORDER.indexOf(id) + 1], hasNext = !!SW.chapters[nextId];
     SW.profile.clears[id] = (SW.profile.clears[id] || 0) + 1;
-    SW.profile.carry = { from: id, flags: SW.game.flags, switches: SW.game.switches };   // 次の章へ引き継ぐ
-    SW.saveProfile(); SW.clearSave();
+    SW.profile.snap[id] = JSON.parse(JSON.stringify({ flags: SW.game.flags, switches: SW.game.switches }));
+    SW.saveProfile();
+    /* 次の章があれば、そこから「つづきから」で再開できるようにしておく */
+    if (hasNext) { SW.game.chapter = nextId; SW.game.checkpoint = SW.game.beat = 'start'; SW.saveGame(); }
+    else SW.clearSave();
     if (ch.stop) ch.stop(); SW.scene.clear(); menuBtn.classList.remove('on');
 
+    endcard.dataset.ch = id;
     endcard.querySelector('.e-ch').textContent = ch.no;
     endcard.querySelector('.e-title').textContent = ch.title;
-    endcard.querySelector('.e-next').textContent = 'NEXT ▸ ' + ch.next + '（制作中）';
+    endcard.querySelector('.e-next').textContent = 'NEXT ▸ ' + ch.next + (hasNext ? '' : '（制作中）');
+    endcard.querySelector('[data-act="next"]').hidden = !hasNext;
     var log = endcard.querySelector('.e-log'), btns = endcard.querySelector('.e-menu');
     log.textContent = ''; btns.classList.remove('on');
     endcard.classList.add('on'); void endcard.offsetWidth; endcard.classList.add('show');
     /* 操作はすべて記録されている、という小さな違和感を残す */
-    var text = '> INPUT LOG\n> ' + total + ' SWITCH OPERATIONS RECORDED.', e = SW.epoch;
+    var text = '> INPUT LOG\n> ' + total + ' SWITCH OPERATIONS RECORDED.';
     (async function () {
       await SW.wait(2600);
       for (var i = 1; i <= text.length; i++) { log.textContent = text.slice(0, i); await SW.wait(34); }
@@ -76,7 +84,27 @@
   endcard.querySelector('.e-menu').addEventListener('click', function (e) {
     var act = e.target.dataset.act; if (!act) return;
     A.se('tick');
-    if (act === 'replay') { SW.newGame(); startChapter(); } else showTitle();
+    if (act === 'next') startChapter();
+    else if (act === 'replay') { SW.newGame(endcard.dataset.ch); startChapter(); }
+    else showTitle();
+  });
+
+  /* ---------- チャプター選択 ---------- */
+  var chapters = $('chapters');
+  function openChapters() {
+    var list = chapters.querySelector('.ch-list'); list.innerHTML = '';
+    SW.ORDER.forEach(function (id) {
+      var ch = SW.chapters[id], b = document.createElement('button'), ok = SW.unlocked(id);
+      b.dataset.ch = id; b.disabled = !ok;
+      b.textContent = ch.no + '　' + (ok ? ch.title : '— — —');
+      list.appendChild(b);
+    });
+    chapters.classList.add('on');
+  }
+  chapters.addEventListener('click', function (e) {
+    var t = e.target;
+    if (t.dataset.act === 'close' || t === chapters) return chapters.classList.remove('on');
+    if (t.dataset.ch && !t.disabled) { A.se('tick'); chapters.classList.remove('on'); SW.newGame(t.dataset.ch); startChapter(); }
   });
 
   /* ---------- メニュー ---------- */

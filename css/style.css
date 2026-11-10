@@ -92,7 +92,22 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .t-menu button,.e-menu button{font:400 15px/1 var(--sans);letter-spacing:.3em;padding:15px 10px 15px calc(10px + .3em);color:#cfcdc8;
   border-bottom:1px solid rgba(255,255,255,.1);transition:color .2s,background .2s}
 .t-menu button:hover,.t-menu button:focus-visible,.e-menu button:hover{color:#fff;background:rgba(255,255,255,.06)}
-.t-menu button[hidden]{display:none}
+.t-menu button[hidden],.e-menu button[hidden]{display:none}
+.ch-list{display:flex;flex-direction:column;gap:4px}
+.ch-list button{text-align:left;font-size:13px}
+.m-box button:disabled{opacity:.3;cursor:default}
+/* 写真を手に取って見る */
+#photo{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);opacity:0;transition:opacity .9s;pointer-events:none;padding-bottom:14vh;perspective:900px}
+#photo.on{display:flex}#photo.show{opacity:1}
+#photo .ph{position:relative;width:min(74vw,62vh,460px);aspect-ratio:4/3;transform:rotate(-2.5deg);transition:transform 1.1s cubic-bezier(.5,0,.3,1);transform-style:preserve-3d}
+#photo.flip .ph{transform:rotate(1.5deg) rotateY(180deg)}
+#photo .ph>div{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden;box-shadow:0 18px 50px rgba(0,0,0,.8)}
+#photo .ph-f{background:#f1eee4;padding:4.5%}
+#photo .ph-f canvas{width:100%;height:100%;display:block;filter:sepia(.28) saturate(.82) contrast(.94)}
+#photo .ph-b{background:#e9e5d8;transform:rotateY(180deg);display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;padding:9%;
+  font-family:'Klee One','Hiragino Maru Gothic ProN','Yu Mincho',cursive,serif;color:#2c3550;letter-spacing:.12em}
+#photo .ph-b b{font-weight:400;font-size:clamp(17px,4.2vmin,28px);transform:rotate(-3deg)}
+#photo .ph-b i{font-style:normal;font-size:clamp(11px,2.6vmin,16px);margin-top:10px;opacity:.75;transform:rotate(-2deg)}
 .t-foot{position:absolute;bottom:calc(14px + var(--sab));left:0;right:0;text-align:center;font-size:10px;letter-spacing:.24em;color:#4a4a4a;margin:0}
 
 /* ---------- 章のおわり ---------- */
