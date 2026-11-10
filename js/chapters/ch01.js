@@ -6,11 +6,12 @@
      ch01_obeyed      … 「電気を消さないで」を守ったか（true/false）
      ch01_tvOffTries  … テレビを消そうとした回数
      ch01_darkAnswer  … 暗い部屋のままインターホンに出たか
+     ch01_remoteDead  … テレビが点く前に、効かないリモコンを押したか
    ============================================================ */
 (function (SW) {
   'use strict';
   var A = SW.audio, U = SW.ui, S = SW.scene, SWT = SW.switches;
-  var LIGHT = 'LIGHT_ROOM_01', TV = 'TV_01', ICOM = 'INTERCOM_01';
+  var LIGHT = 'LIGHT_ROOM_01', TV = 'TV_01', ICOM = 'INTERCOM_01', REMOTE = 'REMOTE_TV_01';   // リモコンは TV_01 を切り替える道具
 
   var v, hooks, snd, raf;   // v = この章の見た目の状態
 
@@ -28,10 +29,10 @@
       '<g filter="url(#c1b30)" style="mix-blend-mode:lighten"><path d="M130 800L530 800L1080 1080L250 1080Z" fill="#4e5b82"/></g>' +
       '<g filter="url(#c1b6)" style="mix-blend-mode:lighten"><rect x="100" y="160" width="412" height="634" fill="#9aa6c8"/></g>' +
       '<g class="c1-dk-door" filter="url(#c1b30)" style="mix-blend-mode:lighten"><ellipse cx="1830" cy="790" rx="120" ry="34" fill="#4a4336"/></g>' +
-      '<g class="c1-dk-lamp" filter="url(#c1b30)" style="mix-blend-mode:lighten"><ellipse cx="1436" cy="516" rx="46" ry="62" fill="#17361f"/></g>' +
+      '<g class="c1-dk-lamp" filter="url(#c1b30)" style="mix-blend-mode:lighten"><ellipse cx="1443" cy="509" rx="34" ry="46" fill="#17361f"/></g>' +
       '<g class="c1-dk-tv" filter="url(#c1b60)" style="mix-blend-mode:lighten;display:none">' +
         '<ellipse class="c1-tvA" cx="960" cy="560" rx="640" ry="400" fill="#3a4662"/><ellipse class="c1-tvB" cx="960" cy="920" rx="560" ry="170" fill="#465273"/></g>' +
-      '<g class="c1-dk-icom" filter="url(#c1b30)" style="mix-blend-mode:lighten;display:none"><ellipse cx="1586" cy="500" rx="170" ry="170" fill="#33423a"/></g>' +
+      '<g class="c1-dk-icom" filter="url(#c1b30)" style="mix-blend-mode:lighten;display:none"><ellipse cx="1578" cy="500" rx="125" ry="125" fill="#33423a"/></g>' +
     '</svg>' +
     /* 光るもの */
     '<div class="abs c1-tvglow"></div>' +
@@ -42,8 +43,9 @@
     '<canvas class="abs c1-lcd" width="96" height="68"></canvas>' +
     '<div class="abs c1-icomled"></div>' +
     '<div class="abs c1-doorgap"></div>' +
+    '<div class="abs c1-remled"></div>' +
     '<style>' +
-    '.c1-rocker{left:1420px;top:480px;width:44px;height:70px;border-radius:3px;box-shadow:0 0 0 1px #a39e8f,1px 2px 2px rgba(0,0,0,.25);' +
+    '.c1-rocker{left:1429px;top:487px;width:28px;height:44px;border-radius:2px;box-shadow:0 0 0 1px #a39e8f,1px 2px 2px rgba(0,0,0,.25);' +
       'background:linear-gradient(100deg,#e6e3da 0%,#f5f3ec 55%,#d6d2c7 100%)}' +
     '.c1-rocker.on{background:linear-gradient(100deg,#d2cec3 0%,#efede6 45%,#ece9e1 100%)}' +
     '.c1-dark{mix-blend-mode:multiply;opacity:1}' +
@@ -54,14 +56,17 @@
     '.c1-tvled.on{background:#5dff8f;box-shadow:0 0 5px 1px rgba(80,255,140,.8)}' +
     '.c1-clock{left:1220px;top:658px;width:92px;height:42px;font:500 25px/42px ui-monospace,"SF Mono",Menlo,Consolas,monospace;text-align:center;' +
       'letter-spacing:1px;color:#ffb65c;text-shadow:0 0 6px rgba(255,160,60,.9),0 0 18px rgba(255,140,40,.5)}' +
-    '.c1-lamp{left:1426px;top:506px;width:5px;height:16px;border-radius:2px;background:#6dffa6;box-shadow:0 0 5px 2px #36ff88,0 0 20px 9px rgba(54,255,136,.5)}' +
+    '.c1-lamp{left:1433px;top:503px;width:3.5px;height:11px;border-radius:1.5px;background:#6dffa6;box-shadow:0 0 4px 1.5px #36ff88,0 0 16px 7px rgba(54,255,136,.5)}' +
     '.c1-lamp.off{background:#39483f;box-shadow:none;mix-blend-mode:multiply;opacity:.6}' +
-    '.c1-lcd{left:1538px;top:434px;width:96px;height:68px;opacity:0}' +
-    '.c1-icomled{left:1599px;top:519px;width:34px;height:34px;border-radius:50%;opacity:0;' +
-      'box-shadow:0 0 0 3px rgba(120,255,160,.9) inset,0 0 12px 3px rgba(80,255,140,.75)}' +
+    '.c1-lcd{left:1547px;top:457px;width:62px;height:44px;opacity:0}' +
+    '.c1-icomled{left:1587px;top:513px;width:22px;height:22px;border-radius:50%;opacity:0;' +
+      'box-shadow:0 0 0 2px rgba(120,255,160,.9) inset,0 0 9px 2px rgba(80,255,140,.75)}' +
     '.c1-icomled.ring{animation:c1ring .7s steps(2) infinite}' +
-    '.c1-icomled.talk{opacity:1;box-shadow:0 0 0 3px rgba(255,190,90,.95) inset,0 0 12px 3px rgba(255,170,60,.7)}' +
+    '.c1-icomled.talk{opacity:1;box-shadow:0 0 0 2px rgba(255,190,90,.95) inset,0 0 9px 2px rgba(255,170,60,.7)}' +
     '@keyframes c1ring{0%{opacity:1}100%{opacity:0}}' +
+    '.c1-remled{left:846px;top:944px;width:5px;height:5px;border-radius:50%;background:#ff5a48;box-shadow:0 0 6px 2px rgba(255,70,50,.9);opacity:0}' +
+    '.c1-remled.on{animation:c1rem .32s ease-out}' +
+    '@keyframes c1rem{0%{opacity:1}70%{opacity:1}100%{opacity:0}}' +
     '.c1-doorgap{left:1762px;top:768px;width:132px;height:3px;background:#ffe9c2;border-radius:2px;opacity:.85;' +
       'box-shadow:0 0 8px 2px rgba(255,225,170,.7),0 6px 22px 6px rgba(255,220,160,.28);transition:opacity .12s}' +
     '</style>';
@@ -225,7 +230,13 @@
     S.hint(LIGHT, false);
     if (hooks.light) hooks.light(on);
   }
-  function tapTV() { if (hooks.tv) hooks.tv(); }
+  /* テレビ本体：見るだけ。ON/OFF はリモコンで行う */
+  function tapTV() { if (hooks.tv) hooks.tv(); else U.note(v.tv === 'off' ? 'テレビは消えている。' : 'リモコンは、テーブルの上だ。'); }
+  function tapRemote() {
+    var l = q('.c1-remled'); l.classList.remove('on'); void l.offsetWidth; l.classList.add('on');
+    A.se('tick'); S.hint(REMOTE, false);
+    if (hooks.remote) hooks.remote();
+  }
   function tapIcom() { if (hooks.icom) hooks.icom(); }
 
   async function lcdPeek() {
@@ -239,9 +250,10 @@
     v = { light: false, tv: 'off', clarity: 0, gaze: 0, mouth: false, lcd: 'off', figure: false, clock17: false, clock18: false };
     hooks = {}; snd = {};
     S.mount(HTML);
-    S.hotspot(LIGHT, [1372, 430, 138, 172], '照明のスイッチ', tapLight);
+    S.hotspot(LIGHT, [1383, 440, 120, 140], '照明のスイッチ', tapLight);
+    S.hotspot(REMOTE, [826, 896, 268, 92], 'テレビのリモコン', tapRemote);
     S.hotspot(TV, [708, 398, 504, 300], 'テレビ', tapTV);
-    S.hotspot(ICOM, [1512, 408, 148, 196], 'インターホン', tapIcom);
+    S.hotspot(ICOM, [1518, 426, 120, 152], 'インターホン', tapIcom);
     SWT.define(LIGHT, false); SWT.define(TV, false); SWT.define(ICOM, false);
     cancelAnimationFrame(raf); raf = requestAnimationFrame(loop);
     snd.room = A.loop('roomtone', 0.5, 2.5);
@@ -260,15 +272,16 @@
       '十一月。残業を終えて、部屋に帰ってきた。',
       again ? '……この暗さを、知っている気がする。' : '部屋は、朝に出たときのまま暗い。'
     ]);
-    S.focus(1480, 540, 1, 0);
+    S.focus(1480, 640, 1, 0);
     await U.fade(0, 2600);
 
-    var tvTaps = 0, lit = false;
-    hooks.tv = function () {
-      tvTaps++;
-      U.note(tvTaps === 1 ? '暗くて、リモコンがどこにあるのかも分からない。' : 'まずは、明かりだ。');
-      if (tvTaps > 1) S.hint(LIGHT, true);
-    };
+    var lit = false;
+    function deadRemote() {
+      SW.game.flags.ch01_remoteDead = true; SWT.event(TV, 'remote_no_response');
+      U.note('リモコンの電源ボタンを押した。……テレビは、反応しない。');
+    }
+    hooks.tv = function () { U.note('テレビは消えている。暗くて、画面には何も映っていない。'); };
+    hooks.remote = deadRemote;
     hooks.icom = SW.guard(async function () {
       U.note('留守のあいだに、来客はなかったらしい。……いつものことだ。');
       await lcdPeek();
@@ -281,9 +294,9 @@
     }
     SWT.event(LIGHT, 'first_switch');
     U.noteHide();
-    hooks.tv = function () { U.note('テレビは消えている。'); };
+    hooks.tv = null; hooks.remote = deadRemote;
     hooks.light = function (on) { if (!on) U.note('……いや、点けておこう。'); };
-    S.focus(1180, 540, 1, 2600);
+    S.focus(1180, 640, 1, 2600);
     await SW.wait(900);
     await U.card('CHAPTER 01', 'FIRST SWITCH', 3400);
     await SW.wait(900);
@@ -307,20 +320,22 @@
     await SW.wait(900);
     SWT.set(TV, true, 'system'); SWT.event(TV, 'self_on');
     A.se('tv_on'); setTV('static');
-    S.focus(960, 540, 1, 1800);
+    S.focus(960, 660, 1, 1800);
     await SW.wait(1300);
     await U.say([
       ren('……テレビ？'),
-      'リモコンは、テーブルの上に置いたままだ。触れていない。'
+      SW.game.flags.ch01_remoteDead ? 'さっきは、リモコンを押しても点かなかったのに。' : 'リモコンは、テーブルの上に置いたままだ。触れていない。'
     ]);
+    S.hint(REMOTE, true);
 
     var moved = false, pending = false, tries = SW.game.flags.ch01_tvOffTries || 0;
-    hooks.tv = SW.guard(async function () {
+    hooks.tv = function () { U.note('ノイズが流れている。……リモコンは、テーブルの上だ。'); };
+    hooks.remote = SW.guard(async function () {
       if (pending) return;
       pending = true;
       SWT.set(TV, false, 'player'); A.se('tv_off'); setTV('off');
       tries++; SW.game.flags.ch01_tvOffTries = tries;
-      U.note(tries === 1 ? '電源を切った。' : 'もう一度、切った。');
+      U.note(tries === 1 ? 'リモコンで、電源を切った。' : 'もう一度、切った。');
       await SW.wait(1900);
       SWT.set(TV, true, 'system'); A.se('tv_on'); setTV('static');
       U.note(tries === 1 ? '……また、点いた。' : '何度消しても、ひとりでに点く。');
@@ -332,14 +347,14 @@
 
     await SW.until(function () { return moved; }, 9000);
     await SW.until(function () { return !pending; });
-    hooks.tv = null;
+    hooks.tv = hooks.remote = null; S.hint(REMOTE, false);
 
     /* ノイズの奥から、女性の姿 */
     U.noteHide();
     snd.drone = A.loop('drone', 0.5, 6);
     v.clarity = 0; v.gaze = 0; setTV('woman');
     SWT.event(TV, 'woman_appeared');
-    S.focus(960, 548, 1.1, 7000, 'ease-in-out');
+    S.focus(960, 600, 1.1, 7000, 'ease-in-out');
     for (var i = 1; i <= 30; i++) { v.clarity = i / 30 * 0.8; await SW.wait(110); }
     await U.say([
       'ノイズの奥から、人の輪郭が浮かび上がってくる。',
@@ -364,17 +379,17 @@
     v.mouth = false;
     A.se('chime');
     q('.c1-icomled').classList.add('ring');
-    S.focus(1500, 520, 1, 1500);
+    S.focus(1500, 600, 1, 1500);
     await SW.wait(2300);
     await U.say(['インターホン。', 'こんな時間に、誰かが来る予定はない。']);
 
     var answered = false, tvTaps = 0;
     hooks.icom = function () { answered = true; };
-    hooks.tv = function () {
-      tvTaps++; A.se('tv_off'); SWT.set(TV, true, 'player');
+    hooks.tv = function () { v.gaze = 1; U.note('画面の女性が、インターホンのほうへ目を向けた。'); };
+    hooks.remote = function () {
+      tvTaps++; SWT.set(TV, true, 'player');
       SW.game.flags.ch01_tvOffTries = (SW.game.flags.ch01_tvOffTries || 0) + 1;
-      if (tvTaps === 1) U.note('電源を押しても、もう消えない。');
-      else { v.gaze = 1; U.note('画面の女性が、インターホンのほうへ目を向けた。'); }
+      U.note(tvTaps === 1 ? 'リモコンを押しても、もう消えない。' : '何度押しても、彼女は画面の中にいる。');
     };
     hooks.light = function (on) { U.note(on ? '呼び出しのランプは、まだ点滅している。' : '暗闇の中で、呼び出しのランプだけが点滅している。'); };
     S.hint(ICOM, true);
@@ -391,7 +406,7 @@
     A.se('beep');
     q('.c1-icomled').classList.remove('ring'); q('.c1-icomled').classList.add('talk');
     setLCD('view');
-    S.focus(1560, 510, 1.22, 2600);
+    S.focus(1578, 505, 1.3, 2600);
     SW.game.flags.ch01_darkAnswer = !v.light;
     if (!v.light) {
       await SW.wait(1100);
@@ -422,13 +437,14 @@
     q('.c1-icomled').classList.remove('talk');
     SWT.set(ICOM, false, 'system');
     v.gaze = 2.2;
-    S.focus(1380, 530, 1, 2400);
+    S.focus(1380, 620, 1, 2400);
     await SW.wait(1500);
 
     /* ---- 最後の選択：照明を消すか、消さないか ---- */
     var off = false;
     hooks.light = function (on) { if (!on) off = true; };
     hooks.tv = function () { U.note('画面の女性は、壁のスイッチを見つめている。'); };
+    hooks.remote = function () { U.note('リモコンは、もう何の役にも立たない。'); };
     hooks.icom = function () { A.se('beep'); U.note('通話は切れている。履歴には、何も残っていない。'); };
     S.hint(LIGHT, true);
     await SW.until(function () { return off; }, 15000);
@@ -450,7 +466,7 @@
     } else {
       /* 消さなかった */
       SW.game.flags.ch01_obeyed = true; SWT.event(LIGHT, 'obeyed');
-      S.focus(1080, 540, 1, 1800);
+      S.focus(1080, 640, 1, 1800);
       await SW.wait(1500);
       v.clock18 = true; setClock('20:18'); A.se('tick');
       await SW.wait(1300);
@@ -486,8 +502,8 @@
         /* 途中から：保存されたスイッチの状態を画面に戻す */
         setLight(SWT.isOn(LIGHT), false);
         v.clock17 = i > 1; setClock(i > 1 ? '20:17' : '20:16');
-        if (i === 2) { v.clarity = 0.8; setTV('woman'); v.mouth = true; snd.drone = A.loop('drone', 0.5, 3); S.focus(960, 548, 1.1, 0); }
-        else S.focus(1180, 540, 1, 0);
+        if (i === 2) { v.clarity = 0.8; setTV('woman'); v.mouth = true; snd.drone = A.loop('drone', 0.5, 3); S.focus(960, 600, 1.1, 0); }
+        else S.focus(1180, 640, 1, 0);
         await U.fade(0, 1800);
       }
       var beats = [beatStart, beatTV, beatRing];

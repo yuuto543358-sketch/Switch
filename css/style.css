@@ -46,7 +46,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 #tapcatch{position:absolute;inset:0;display:none}
 #tapcatch.on{display:block}
 
-#note{position:absolute;left:0;right:0;bottom:calc(8vh + var(--sab));padding:0 24px;text-align:center;font-family:var(--serif);
+#note{position:absolute;left:0;right:0;bottom:calc(3.5vh + var(--sab));padding:0 24px;text-align:center;font-family:var(--serif);
   font-size:clamp(14px,1vmin + 11px,19px);letter-spacing:.08em;line-height:1.8;color:#e4e2dc;text-shadow:0 1px 10px #000,0 0 3px #000,0 0 22px #000;
   opacity:0;transition:opacity .6s;pointer-events:none}
 #note.on{opacity:1}
