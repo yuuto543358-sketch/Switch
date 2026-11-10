@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="46%" r="70%"><stop offset="0" stop-color="#1b1d1f"/><stop offset="1" stop-color="#020202"/></radialGradient>
+  <linearGradient id="pl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6f4ee"/><stop offset="1" stop-color="#cfcbc0"/></linearGradient>
+  <linearGradient id="rk" x1="0" y1="0" x2="1" y2="0.2"><stop offset="0" stop-color="#dedad0"/><stop offset=".55" stop-color="#f7f5ef"/><stop offset="1" stop-color="#d3cfc4"/></linearGradient>
+  <radialGradient id="gl" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#3dff8d" stop-opacity=".55"/><stop offset="1" stop-color="#3dff8d" stop-opacity="0"/></radialGradient>
+  <filter id="sh" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="12"/></filter>
+</defs>
+<rect width="512" height="512" fill="url(#bg)"/>
+<rect x="176" y="126" width="160" height="268" rx="16" fill="#000" opacity=".7" filter="url(#sh)" transform="translate(0 12)"/>
+<rect x="172" y="118" width="168" height="276" rx="16" fill="url(#pl)"/>
+<rect x="174" y="120" width="164" height="4" rx="2" fill="#fff"/>
+<rect x="198" y="156" width="116" height="200" rx="8" fill="url(#rk)" stroke="#9c9788" stroke-width="2"/>
+<circle cx="222" cy="256" r="62" fill="url(#gl)"/>
+<rect x="215" y="232" width="14" height="48" rx="5" fill="#63ffa2"/>
+<rect x="218" y="236" width="5" height="40" rx="2.5" fill="#d9ffe8" opacity=".8"/>
+</svg>

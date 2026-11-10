@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>SWITCH</title>
+<meta name="description" content="One switch. Countless consequences. スイッチを押すだけの、ミステリーSFアドベンチャー。">
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SWITCH">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <!-- ゲーム画面 -->
+  <div id="stage"><div id="scene"></div></div>
+  <div id="fx-vignette"></div>
+  <div id="fx-grain"></div>
+  <div id="fade"></div>
+
+  <div id="card" aria-live="polite"></div>
+  <div id="note" aria-live="polite"></div>
+  <div id="tapcatch"></div>
+  <div id="dialogue">
+    <div class="d-name"></div>
+    <div class="d-text"></div>
+    <div class="d-next">▼</div>
+  </div>
+
+  <button id="menu-btn" aria-label="メニュー"><span></span><span></span><span></span></button>
+
+  <!-- タイトル画面 -->
+  <div id="title">
+    <div class="t-inner">
+      <h1 class="t-logo">SWITCH</h1>
+      <p class="t-copy">One switch. Countless consequences.</p>
+      <button id="title-switch" class="wallswitch" aria-label="スイッチを押す" aria-pressed="false">
+        <span class="ws-rocker"><span class="ws-lamp"></span></span>
+      </button>
+      <p class="t-hint">スイッチを押す</p>
+      <div class="t-menu">
+        <button data-act="new">はじめから</button>
+        <button data-act="continue">つづきから</button>
+        <button data-act="settings">設定</button>
+      </div>
+    </div>
+    <p class="t-foot">音が出ます。イヤホン推奨。</p>
+  </div>
+
+  <!-- 章のおわり -->
+  <div id="endcard">
+    <div class="e-inner">
+      <p class="e-ch"></p>
+      <h2 class="e-title"></h2>
+      <p class="e-end">— END —</p>
+      <p class="e-log"></p>
+      <p class="e-next"></p>
+      <div class="e-menu">
+        <button data-act="replay">もう一度あそぶ</button>
+        <button data-act="title">タイトルへ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- メニュー -->
+  <div id="menu" class="modal">
+    <div class="m-box">
+      <h3>PAUSE</h3>
+      <button data-act="resume">ゲームにもどる</button>
+      <button data-act="settings">設定</button>
+      <button data-act="title">セーブしてタイトルへ</button>
+    </div>
+  </div>
+
+  <!-- 設定 -->
+  <div id="settings" class="modal">
+    <div class="m-box">
+      <h3>SETTINGS</h3>
+      <label>全体の音量<input type="range" min="0" max="100" data-set="master"></label>
+      <label>BGM・環境音<input type="range" min="0" max="100" data-set="bgm"></label>
+      <label>効果音<input type="range" min="0" max="100" data-set="se"></label>
+      <div class="m-row"><span>文字の速さ</span>
+        <div class="seg" data-set="textSpeed">
+          <button data-v="0.6">ゆっくり</button><button data-v="1">ふつう</button><button data-v="2">はやい</button>
+        </div>
+      </div>
+      <button data-act="fullscreen">全画面表示の切りかえ</button>
+      <button data-act="erase" class="danger">セーブデータを消す</button>
+      <button data-act="close">とじる</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/assets.js"></script>
+<script src="js/core/state.js"></script>
+<script src="js/core/audio.js"></script>
+<script src="js/core/scene.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/chapters/ch01.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
