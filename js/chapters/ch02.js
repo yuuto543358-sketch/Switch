@@ -137,7 +137,7 @@
     A.se('ding'); await SW.wait(800); if (gone()) return;
     doors(true);
     await SW.wait(1500); if (gone()) return;
-    U.note(v.calls === 1 ? '扉が開いた。中には、誰も乗っていない。' : v.calls === 2 ? 'このマンションは、七階建てだ。' : 'かごの奥の鏡に、俺だけが映っている。');
+    U.note(v.calls === 1 ? '扉が開いた。中には、誰も乗っていない。' : v.calls === 2 ? '中は、空だ。このマンションは、七階建てのはずなのに。' : 'やはり、誰も乗っていない。');
     await SW.wait(4300); if (gone()) return;
     doors(false);
     await SW.wait(1600); if (gone()) return;
@@ -179,7 +179,8 @@
     await SW.wait(600);
     await U.say([
       obeyed ? '部屋の明かりは、点けたままにしてきた。' : '部屋の明かりは、消えたままだ。',
-      'あの声は、たしかに玄関の外から聞こえた。',
+      obeyed ? 'あの声は、玄関の外の呼び出し機から届いていた。' : '最後の声は、玄関のドアのすぐ向こうから聞こえた。',
+      obeyed ? 'モニターには映らなくても、そこに誰かがいたはずだ。' : 'ドアの向こうに、誰かがいる。',
       '確かめずには、いられなかった。'
     ]);
     A.se('door');
@@ -190,7 +191,7 @@
     await U.card('CHAPTER 02', 'THE APARTMENT', 3400);
     await SW.wait(700);
     await U.say([
-      '四階の、エレベーターホール。',
+      '玄関を出てすぐの、四階のエレベーターホール。',
       v.light ? '誰もいない。蛍光灯が一本、切れかけて瞬いている。'
         : obeyed ? '誰もいない。共用灯を消すと、非常口の緑と、エレベーターの表示だけが残った。'
         : '明かりが、すべて消えている。非常口の緑と、エレベーターの表示だけが、暗がりに浮かんでいる。',
@@ -405,7 +406,10 @@
     x.imageSmoothingEnabled = true; x.drawImage(s, 0, 0, 160, 120);
     k = x.createLinearGradient(0, 0, 160, 0); k.addColorStop(0, 'rgba(255,150,60,.35)'); k.addColorStop(.25, 'rgba(255,200,120,0)');
     x.fillStyle = k; x.fillRect(0, 0, 160, 120);
-    x.font = 'bold 8px ui-monospace,Menlo,Consolas,monospace'; x.fillStyle = '#ff9a3a'; x.fillText("'-- 11 17", 108, 112);
+    /* 日付は「今年の11年前」。写真の表と裏に、同じ日付が入る */
+    var yr = new Date().getFullYear() - 11;
+    x.font = 'bold 8px ui-monospace,Menlo,Consolas,monospace'; x.fillStyle = '#ff9a3a'; x.fillText("'" + String(yr).slice(2) + ' 11 17', 108, 112);
+    document.querySelector('#photo .ph-b i').textContent = yr + ' . 11 . 17';
   }
 
   function buildRoom() {
@@ -442,7 +446,7 @@
     await U.say([
       '部屋に入ると、音は止んだ。',
       '間取りは、俺の部屋と同じだ。左右だけが、鏡に映したように逆になっている。',
-      '家具はない。床に、テレビが一台、置かれているだけだ。',
+      '家具はない。床に、テレビが一台と、段ボール箱がひとつ、置かれているだけだ。',
       '画面に映っているのは——この部屋だ。',
       'テレビの前に立つ、男の背中。',
       ren('……俺？')
@@ -504,7 +508,7 @@
     await SW.wait(1500);
     await U.say([
       '「蓮と。——美咲」',
-      '日付は、十一年前の十一月。',
+      '日付は、' + (new Date().getFullYear() - 11) + '年の十一月十七日。十一年前だ。',
       ren('……美咲。'),
       '知らない名前だ。それなのに、声に出すと、喉の奥が痛んだ。'
     ]);
@@ -563,8 +567,9 @@
     await SW.wait(2400);
     await U.say([
       '廊下で、エレベーターの到着を告げる音がした。',
-      SWT.count(ELEV) > 0 ? '……今は、誰も呼んでいない。' : '呼んだ覚えは、ない。'
-    ]);
+    ].concat(SWT.count(ELEV) > 0
+      ? ['さっき呼んだエレベーターは、とうに行ってしまったはずだ。', '今は、誰も呼んでいない。']
+      : ['呼んだ覚えは、ない。']));
     await U.fade(1, 0);
     await SW.wait(1400);
   }

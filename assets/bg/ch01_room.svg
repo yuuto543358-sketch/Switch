@@ -229,8 +229,8 @@
   <!-- 写真立て -->
   <rect x="636" y="640" width="46" height="62" fill="#000" opacity=".3" filter="url(#b4)"/>
   <rect x="632" y="636" width="46" height="64" rx="2" fill="#2a2018"/>
-  <rect x="637" y="641" width="36" height="54" fill="#59626b"/>
-  <g filter="url(#b2)"><rect x="637" y="641" width="36" height="24" fill="#8fa6b8"/><circle cx="649" cy="667" r="5" fill="#d9b9a0"/><path d="M641 695q0-20 8-20t8 20z" fill="#3b4250"/><circle cx="662" cy="669" r="4.5" fill="#dcc0a8"/><path d="M655 695q0-18 7-18t7 18z" fill="#e8e6e0"/></g>
+  <rect x="637" y="641" width="36" height="54" fill="#cfc9bb"/>
+  <rect x="641" y="646" width="28" height="44" fill="#e4dfd2"/>
   <path d="M637 641h20l-14 54h-6z" fill="#fff" opacity=".18"/>
   <!-- デジタル時計の本体 -->
   <rect x="1222" y="662" width="92" height="42" fill="#000" opacity=".3" filter="url(#b4)"/>

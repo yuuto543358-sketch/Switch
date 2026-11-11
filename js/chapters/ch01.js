@@ -352,7 +352,7 @@
       if (v.tv === 'off') U.note(on ? '明かりを点けた。テレビは、消えたままだ。' : '明かりを消した。部屋は、真っ暗になった。');
       else U.note(on ? '明かりを点けても、ノイズは消えない。' : 'テレビの光だけが、部屋を青白く照らしている。');
     };
-    hooks.icom = SW.guard(async function () { U.note('モニターには、何も映っていない。'); await lcdPeek(); });
+    hooks.icom = SW.guard(async function () { U.note('モニターを点けた。来客の記録は、やはり0件だ。'); await lcdPeek(); });
 
     await SW.until(function () { return moved; }, 9000);
     await SW.until(function () { return !pending; });
@@ -434,7 +434,8 @@
     v.mouth = false;
     await U.say([
       ren('……誰だ。どうして、俺の名前を'),
-      'スピーカーの声に合わせて、テレビの中の唇が動いている。'
+      '声は、玄関の外の呼び出し機から届いている。けれどモニターの廊下には、誰の姿もない。',
+      'その声に合わせて、テレビの中の唇が動いている。'
     ]);
     v.mouth = true;
     await U.say([voice('お願い。今度は電気を消さないで。')]);
@@ -471,7 +472,7 @@
       A.se('tv_off'); setTV('off'); SWT.set(TV, false, 'system');
       A.stopAll(0.1);
       await SW.wait(2400);
-      await U.say([voice('……また、消すんだね。')]);
+      await U.say(['玄関のドアの、すぐ向こうで、声がした。', voice('……また、消すんだね。')]);
       await U.fade(1, 0);
     } else {
       /* 消さなかった */
