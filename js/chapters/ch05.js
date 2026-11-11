@@ -56,6 +56,7 @@
   function darkDock(on) {
     return DEFS + '<rect width="1920" height="1080" fill="#05070a"/>' +
       g(30, '<ellipse cx="274" cy="284" rx="170" ry="170" fill="#1c2434"/>') +
+      g(60, '<ellipse cx="1560" cy="470" rx="480" ry="360" fill="#20262c"/>') +   /* 開いた門からの、外の薄明かり */
       (on.beacon ? g(60, '<ellipse cx="960" cy="330" rx="620" ry="420" fill="#4a3a14"/>') : '') +
       (on.open ? g(60, '<ellipse cx="960" cy="560" rx="300" ry="330" fill="#2c3a36"/>') : '');
   }
@@ -240,7 +241,7 @@
     }
     k = c.createRadialGradient(57, 34, 1, 57, 34, 26); k.addColorStop(0, 'rgba(170,220,200,.5)'); k.addColorStop(1, 'rgba(120,180,160,0)');
     c.fillStyle = k; c.fillRect(20, 6, 75, 56);
-    c.fillStyle = '#9fd0c0'; c.fillRect(49, 28, 16, 10);                                   // 端末の画面
+    c.fillStyle = '#9fd0c0'; c.fillRect(46, 22, 22, 3);                                    // 端末の画面（頭の向こうに、上の縁だけ見える）
     c.fillStyle = '#0a0c0c'; c.fillRect(44, 44, 26, 21);                                    // 椅子の背
     c.beginPath(); c.moveTo(41, 65); c.quadraticCurveTo(42, 43, 51, 41); c.lineTo(63, 41); c.quadraticCurveTo(72, 43, 73, 65); c.fill();
     c.fillStyle = '#3a4444'; c.beginPath(); c.moveTo(43, 65); c.quadraticCurveTo(44, 45, 52, 43); c.lineTo(62, 43); c.quadraticCurveTo(70, 45, 71, 65); c.fill();
@@ -338,7 +339,8 @@
         ren('SWITCHは、そのあと、どうなったんですか。'),
         kuroda('止めた。事故の二分後に、私がこの手で、系統スイッチを切った。'),
         kuroda('そこの表示を見なさい。「状態：停止」。——十一年間、そのままだ。'),
-        kuroda('それなのに、系統図のランプは点いている。……おかしいとは、思わないかね。')
+        lever ? kuroda('それなのに、動いている。——君がさっき、その手で確かめたとおりだ。')
+              : kuroda('それなのに、系統図のランプは点いている。……おかしいとは、思わないかね。')
       ]);
       else await U.say([kuroda('話せることは、もう話した。あとは、君がその目で確かめなさい。')]);
       if (stage < 3) stage++;
