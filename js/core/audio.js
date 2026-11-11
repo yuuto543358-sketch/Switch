@@ -181,6 +181,15 @@
     },
     /* 心電図モニターの拍動音 */
     pulse: function (t, out) { var g = gain(0, out); hit(g, t, 0.07, 0.004, 0.07); osc('sine', 880, g, t, t + 0.1); },
+    /* 記録計が紙を打ち出す音 */
+    printer: function (t, out) {
+      for (var i = 0; i < 7; i++) { var g = gain(0, out); hit(g, t + i * 0.09, 0.12, 0.003, 0.05); src(white, filt('bandpass', 3400 + (i % 3) * 500, 3, g), t + i * 0.09, 0.07); }
+    },
+    /* 警報 */
+    alarm: function (t, out) {
+      var sp = filt('bandpass', 1200, 0.6, out);
+      for (var i = 0; i < 4; i++) { var g = gain(0, sp); hit(g, t + i * 0.5, 0.14, 0.01, 0.42); osc('square', i % 2 ? 660 : 880, g, t + i * 0.5, t + i * 0.5 + 0.46); }
+    },
     tick: function (t, out) { clickAt(t, out, 2.6, 0.1); },
     boom: function (t, out) {
       var g = gain(0, out); hit(g, t, 0.9, 0.01, 2.6);
@@ -262,6 +271,11 @@
     genhum: function (out, t) {
       var lp = filt('lowpass', 300, 1, gain(0.4, out));
       return [osc('sawtooth', 50, lp, t), osc('sawtooth', 100.3, gain(0.4, lp), t), src(brown, filt('lowpass', 200, 0.5, gain(0.3, out)), t, 0, true)];
+    },
+    /* 大きな換気扇 */
+    fan: function (out, t) {
+      var w = gain(0.5, out), l = osc('sine', 11, gain(0.18, w.gain), t);
+      return [src(brown, filt('lowpass', 420, 0.4, w), t, 0, true), src(white, filt('bandpass', 1500, 0.4, gain(0.03, w)), t, 0, true), osc('sine', 62, gain(0.05, out), t), l];
     },
     drone: function (out, t) {
       var lp = filt('lowpass', 170, 1.2, gain(0.55, out));
