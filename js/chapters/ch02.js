@@ -467,6 +467,7 @@
       if (v.light) return;
       U.note('壁に、何か貼られている。暗くて、よく見えない。'); S.hint(L404, true); S.focus(700, 640, 1, 1600);
     };
+    if (v.light) litOnce = true;   // 文章が出る前に、もう明かりを点けていた場合
     if (S.isNarrow()) U.note('画面を指でなぞると、部屋を見回せる。', 2600);
     if (!(await SW.until(function () { return litOnce; }, 16000))) {
       U.note('暗くて、部屋の様子がよく分からない。'); S.hint(L404, true); S.focus(700, 640, 1, 1800);

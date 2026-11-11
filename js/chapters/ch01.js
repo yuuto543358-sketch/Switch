@@ -287,6 +287,7 @@
       await lcdPeek();
     });
     hooks.light = function (on) { if (on) lit = true; };
+    if (v.light) lit = true;   // 画面が明るくなりきる前に、もう押されていた場合
 
     if (!(await SW.until(function () { return lit; }, 6500))) {
       U.note('壁のスイッチが、小さく緑に光っている。'); S.hint(LIGHT, true);
