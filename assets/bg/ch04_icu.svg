@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+<!-- SWITCH / CHAPTER 04 : 灯ヶ丘総合病院・ICU 3番（照明ONの状態）。同じ構図の写真（1920x1080）に差し替え可能。 -->
+<defs>
+  <filter id="b2" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2"/></filter>
+  <filter id="b4" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="4"/></filter>
+  <filter id="b8" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="8"/></filter>
+  <filter id="b16" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="16"/></filter>
+  <filter id="b40" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="40"/></filter>
+  <filter id="grainF" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="7"/><feColorMatrix values="0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0.9 0.9 0.9 0 -0.95"/></filter>
+  <filter id="stain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.004 0.012" numOctaves="3" seed="9"/><feColorMatrix values="0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 0 0.08  1.4 0 0 0 -0.6"/></filter>
+  <filter id="speck" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.55" numOctaves="2" seed="17"/><feColorMatrix values="0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 0 0.1  2.2 2.2 2.2 0 -3.1"/></filter>
+  <filter id="hair" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9 0.004" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.9 0 0 0 -0.35"/></filter>
+  <linearGradient id="aoB" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#15170f" stop-opacity=".42"/><stop offset="1" stop-color="#15170f" stop-opacity="0"/></linearGradient>
+  <linearGradient id="aoL" x1="0" x2="1"><stop offset="0" stop-color="#14130f" stop-opacity=".45"/><stop offset="1" stop-color="#14130f" stop-opacity="0"/></linearGradient>
+  <linearGradient id="aoR" x1="1" x2="0"><stop offset="0" stop-color="#14130f" stop-opacity=".45"/><stop offset="1" stop-color="#14130f" stop-opacity="0"/></linearGradient>
+  <linearGradient id="steel" x1="0" x2="1"><stop offset="0" stop-color="#8d9092"/><stop offset=".3" stop-color="#c9cccd"/><stop offset=".55" stop-color="#a3a6a8"/><stop offset="1" stop-color="#7b7e80"/></linearGradient>
+  <linearGradient id="steelV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cdd0d1"/><stop offset="1" stop-color="#85888b"/></linearGradient>
+  <linearGradient id="plastic" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4f4ee"/><stop offset="1" stop-color="#d4d4ca"/></linearGradient>
+  <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f2fff4" stop-opacity=".32"/><stop offset="1" stop-color="#f2fff4" stop-opacity="0"/></linearGradient>
+  <pattern id="tile" width="60" height="60" patternUnits="userSpaceOnUse"><rect width="60" height="60" fill="#e3e1d6"/><rect width="60" height="2" fill="#aeab9f"/><rect width="2" height="60" fill="#aeab9f"/><rect x="2" y="2" width="58" height="2" fill="#f4f2e8"/></pattern>
+  <pattern id="ceil" width="120" height="60" patternUnits="userSpaceOnUse"><rect width="120" height="60" fill="#d9d8cf"/><rect width="120" height="1.5" fill="#a9a89f"/><rect width="1.5" height="60" fill="#a9a89f"/></pattern>
+  <pattern id="blind" width="10" height="9" patternUnits="userSpaceOnUse"><rect width="10" height="9" fill="#d4d2c6"/><rect y="7" width="10" height="2" fill="#8f8d82"/><rect width="10" height="1.5" fill="#f1efe4"/></pattern>
+  <pattern id="tac" width="22" height="22" patternUnits="userSpaceOnUse"><rect width="22" height="22" fill="#d9b422"/><circle cx="11" cy="11" r="5" fill="#eccb44"/></pattern>
+<radialGradient id="p0" cx="820" cy="-60" r="1300" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#f6fff6" stop-opacity=".75"/><stop offset=".5" stop-color="#eefaf0" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e4e6da"/><stop offset=".6" stop-color="#d3d6c9"/><stop offset="1" stop-color="#b6b9ad"/></linearGradient>
+  <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7d8a84"/><stop offset=".4" stop-color="#93a099"/><stop offset="1" stop-color="#a9b5ae"/></linearGradient>
+  <linearGradient id="box" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3d41"/><stop offset="1" stop-color="#1c1e21"/></linearGradient>
+  <linearGradient id="cream" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#efeadb"/><stop offset="1" stop-color="#cfc9b7"/></linearGradient>
+  <linearGradient id="counter" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9d3c2"/><stop offset="1" stop-color="#b3ad9c"/></linearGradient>
+  <linearGradient id="counterF" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b9a98c"/><stop offset="1" stop-color="#8a7c64"/></linearGradient>
+  <linearGradient id="sheet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1f1ea"/><stop offset="1" stop-color="#cfd0c7"/></linearGradient>
+  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#060a16"/><stop offset=".7" stop-color="#151b30"/><stop offset="1" stop-color="#3a3038"/></linearGradient>
+  <pattern id="winA" width="14" height="18" patternUnits="userSpaceOnUse"><rect width="14" height="18" fill="#0a0d16"/><rect x="2" y="3" width="7" height="9" fill="#ffd98a" opacity=".5"/></pattern>
+  <pattern id="winB" width="42" height="36" patternUnits="userSpaceOnUse"><rect width="42" height="36" fill="#0c0f19"/><rect x="3" y="4" width="8" height="10" fill="#ffe6ae"/><rect x="31" y="4" width="8" height="10" fill="#9fc4e8" opacity=".7"/><rect x="17" y="22" width="8" height="10" fill="#ffcf7a"/></pattern>
+
+  <clipPath id="glass"><rect x="1532" y="182" width="316" height="486"/></clipPath>
+</defs>
+<rect width="1920" height="1080" fill="url(#wall)"/><rect width="1920" height="1080" filter="url(#stain)" opacity=".2"/>
+<rect width="1920" height="800" fill="url(#p0)"/><rect width="1920" height="1080" filter="url(#grainF)" opacity=".45"/>
+<rect width="340" height="800" fill="url(#aoL)"/><rect x="1580" width="340" height="800" fill="url(#aoR)"/><rect y="560" width="1920" height="200" fill="url(#aoB)"/>
+<rect width="1920" height="46" fill="#cfd1c5"/><rect y="44" width="1920" height="4" fill="#8f9186"/>
+<!-- カーテンレールと仕切りカーテン -->
+<rect x="300" y="70" width="1140" height="8" rx="3" fill="#b9bcaf"/>
+<path d="M300 78 H420 Q410 440 430 800 H318 Q296 440 300 78Z" fill="#cfe0d6"/><path d="M300 78 H420 Q410 440 430 800 H318 Q296 440 300 78Z" fill="#1f3a32" opacity=".16"/>
+<g stroke="#9db5a8" stroke-width="3" opacity=".6"><path d="M330 80Q324 440 346 800M362 80Q356 440 378 800M394 80Q388 440 410 800"/></g>
+<!-- 入口のドア枠と照明スイッチ（左） -->
+<rect x="0" y="130" width="96" height="690" fill="#0b0e0f"/><rect x="96" y="120" width="14" height="704" fill="#b9bcaf"/>
+<rect x="151" y="483" width="38" height="62" rx="4" fill="#000" opacity=".28" filter="url(#b2)"/>
+<rect x="148" y="478" width="38" height="62" rx="4" fill="url(#plastic)"/><rect x="148" y="478" width="38" height="62" rx="4" fill="none" stroke="#a9a393"/>
+<!-- 窓 -->
+<rect x="1512" y="166" width="356" height="522" fill="#000" opacity=".3" filter="url(#b16)"/>
+<rect x="1520" y="170" width="340" height="510" fill="#23201c"/>
+<g clip-path="url(#glass)"><rect x="1532" y="182" width="316" height="486" fill="url(#sky)"/>
+  <g filter="url(#b2)"><rect x="1530" y="420" width="90" height="260" fill="url(#winB)"/><rect x="1610" y="340" width="84" height="340" fill="url(#winA)"/><rect x="1690" y="460" width="100" height="220" fill="url(#winB)"/><rect x="1780" y="380" width="80" height="300" fill="url(#winA)" opacity=".8"/></g>
+  <path d="M1532 182h130l-90 486h-40z" fill="#fff" opacity=".035"/></g>
+<rect x="1520" y="170" width="340" height="510" fill="none" stroke="#57514a" stroke-width="12"/><rect x="1684" y="176" width="12" height="498" fill="#57514a"/>
+<rect x="1500" y="680" width="380" height="16" fill="#cfd1c5"/>
+<!-- 壁の設備レール（酸素・吸引・コンセント） -->
+<rect x="470" y="436" width="760" height="62" rx="4" fill="#000" opacity=".2" filter="url(#b8)" transform="translate(0 8)"/>
+<rect x="470" y="430" width="760" height="62" rx="4" fill="url(#cream)"/><rect x="470" y="430" width="760" height="3" fill="#fff"/><rect x="470" y="430" width="760" height="62" rx="4" fill="none" stroke="#8f8a78"/>
+<g><circle cx="530" cy="461" r="17" fill="#3f8f4f"/><circle cx="530" cy="461" r="7" fill="#1c1e21"/><circle cx="590" cy="461" r="17" fill="#d9b422"/><circle cx="590" cy="461" r="7" fill="#1c1e21"/><circle cx="650" cy="461" r="17" fill="#1c1e21"/><circle cx="650" cy="461" r="7" fill="#55585a"/></g>
+<g><rect x="950" y="444" width="40" height="34" rx="3" fill="#f4f4ee" stroke="#8f8a78"/><rect x="962" y="454" width="3" height="12" fill="#333"/><rect x="975" y="454" width="3" height="12" fill="#333"/><rect x="1006" y="444" width="40" height="34" rx="3" fill="#f4f4ee" stroke="#8f8a78"/><rect x="1018" y="454" width="3" height="12" fill="#333"/><rect x="1031" y="454" width="3" height="12" fill="#333"/><rect x="1062" y="444" width="40" height="34" rx="3" fill="#d8392c" stroke="#8f8a78"/><rect x="1074" y="454" width="3" height="12" fill="#333"/><rect x="1087" y="454" width="3" height="12" fill="#333"/><rect x="1118" y="444" width="40" height="34" rx="3" fill="#d8392c" stroke="#8f8a78"/><rect x="1130" y="454" width="3" height="12" fill="#333"/><rect x="1143" y="454" width="3" height="12" fill="#333"/></g>
+<!-- 名札の台紙（文字はゲーム側） -->
+<rect x="724" y="316" width="252" height="86" rx="3" fill="#000" opacity=".25" filter="url(#b4)" transform="translate(0 5)"/>
+<rect x="724" y="316" width="252" height="86" rx="3" fill="#f6f4ea" stroke="#8f8a78"/><rect x="724" y="316" width="252" height="20" rx="3" fill="#3f8f78"/>
+<!-- 非常電源のスイッチ箱（操作部はゲーム側） -->
+<rect x="1284" y="388" width="110" height="140" rx="4" fill="#000" opacity=".28" filter="url(#b4)" transform="translate(0 8)"/>
+<rect x="1284" y="388" width="110" height="140" rx="4" fill="#c8362b"/><rect x="1284" y="388" width="110" height="3" fill="#f08a80"/><rect x="1284" y="388" width="110" height="140" rx="4" fill="none" stroke="#7a1f18" stroke-width="2"/>
+<rect x="1294" y="398" width="90" height="24" rx="1" fill="#f6f4ea"/><text x="1339" y="416" text-anchor="middle" font-family="sans-serif" font-size="15" font-weight="700" fill="#7a1f18">非常電源</text>
+<!-- 床 -->
+<rect y="820" width="1920" height="260" fill="url(#floor)"/><rect y="820" width="1920" height="260" filter="url(#speck)" opacity=".45"/><rect y="820" width="1920" height="130" fill="url(#gloss)"/>
+<rect y="812" width="1920" height="10" fill="#c4c7ba"/><rect y="822" width="1920" height="26" fill="#000" opacity=".25" filter="url(#b8)"/>
+<!-- ベッド -->
+<ellipse cx="830" cy="1010" rx="520" ry="50" fill="#0b0d0c" opacity=".55" filter="url(#b16)"/>
+<rect x="540" y="500" width="560" height="110" rx="10" fill="#d9d4c3"/><rect x="540" y="500" width="560" height="4" rx="2" fill="#fff"/><rect x="540" y="500" width="560" height="110" rx="10" fill="none" stroke="#8f8a78" stroke-width="2"/>
+<path d="M548 606 H1092 L1250 960 H400Z" fill="url(#sheet)"/>
+<path d="M400 960 H1250 V1010 H400Z" fill="#b9bab1"/><path d="M400 1010 H1250 V1028 H400Z" fill="#6e7173"/>
+<path d="M470 1028v52M1180 1028v52" stroke="#55585a" stroke-width="14"/>
+<!-- 枕と、人が寝ていた跡 -->
+<path d="M650 606 Q820 580 990 606 Q1004 660 980 690 Q820 706 660 690 Q636 660 650 606Z" fill="#fbfbf6"/>
+<ellipse cx="820" cy="650" rx="76" ry="24" fill="#8f9186" opacity=".45" filter="url(#b8)"/>
+<path d="M520 742 Q820 716 1140 742 L1250 960 H400Z" fill="#dfe6e0"/><path d="M520 742 Q820 716 1140 742" fill="none" stroke="#fff" stroke-width="3"/>
+<ellipse cx="820" cy="850" rx="170" ry="70" fill="#7f8a82" opacity=".3" filter="url(#b16)"/>
+<g stroke="#a9b3ab" stroke-width="3" fill="none" opacity=".7"><path d="M600 790 Q700 770 760 800M900 800 Q980 776 1080 800M560 900 Q700 880 800 910M860 920 Q1000 890 1160 920"/></g>
+<!-- ベッド柵 -->
+<path d="M400 900 L520 690" stroke="url(#steelV)" stroke-width="8"/><path d="M1250 900 L1128 690" stroke="url(#steelV)" stroke-width="8"/>
+<!-- 足元のクリップボード -->
+<rect x="764" y="918" width="132" height="98" rx="4" fill="#000" opacity=".35" filter="url(#b4)" transform="translate(0 5)"/>
+<rect x="764" y="918" width="132" height="98" rx="4" fill="#7d5a32"/><rect x="772" y="930" width="116" height="82" fill="#f6f4ea"/>
+<rect x="804" y="910" width="52" height="18" rx="3" fill="url(#steelV)"/>
+<g stroke="#77756b" stroke-width="2"><path d="M782 946h96M782 958h80M782 970h92M782 982h60"/></g><rect x="782" y="992" width="96" height="10" fill="#15171a"/>
+<!-- ベッドの上のナースコール子機 -->
+<path d="M560 480 Q540 620 610 720" fill="none" stroke="#d9d4c3" stroke-width="5"/>
+<rect x="596" y="712" width="34" height="74" rx="12" fill="#f1ecdc" stroke="#8f8a78" transform="rotate(-18 613 749)"/>
+<!-- ベッドサイドモニター（画面はゲーム側） -->
+<path d="M1432 1000V480" stroke="url(#steelV)" stroke-width="10"/><path d="M1370 1010h124" stroke="#6e7173" stroke-width="12"/>
+<rect x="1318" y="556" width="236" height="190" rx="8" fill="#000" opacity=".35" filter="url(#b8)" transform="translate(0 8)"/>
+<rect x="1318" y="550" width="236" height="184" rx="8" fill="url(#cream)"/><rect x="1318" y="550" width="236" height="3" rx="1" fill="#fff"/><rect x="1318" y="550" width="236" height="184" rx="8" fill="none" stroke="#8f8a78"/>
+<rect x="1332" y="564" width="208" height="136" rx="3" fill="#07090a"/>
+<g fill="#b9b4a3"><circle cx="1350" cy="716" r="6"/><circle cx="1372" cy="716" r="6"/><circle cx="1394" cy="716" r="6"/></g>
+<!-- 点滴スタンド -->
+<path d="M470 240V1000" stroke="url(#steelV)" stroke-width="7"/><path d="M430 240h80" stroke="url(#steelV)" stroke-width="6"/><path d="M420 1008h100" stroke="#77797b" stroke-width="9"/>
+<rect x="424" y="270" width="40" height="72" rx="8" fill="#dfe9ee" opacity=".75"/><path d="M444 342 Q440 520 560 640" fill="none" stroke="#cfd8dc" stroke-width="2" opacity=".8"/>
+</svg>

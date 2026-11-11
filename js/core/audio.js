@@ -174,6 +174,13 @@
       var g2 = gain(0, out); g2.gain.setValueAtTime(0.0001, t + 3); g2.gain.exponentialRampToValueAtTime(0.045, t + 4.4); g2.gain.exponentialRampToValueAtTime(0.0001, t + 6.4);
       var o = osc('sawtooth', 2900, filt('bandpass', 2800, 9, g2), t + 3, t + 6.5); o.frequency.linearRampToValueAtTime(2300, t + 6.3);
     },
+    /* ナースコールの呼び出し音 */
+    nursecall: function (t, out) {
+      var sp = filt('bandpass', 1800, 0.5, gain(1, out));
+      [1318.5, 1046.5, 1318.5, 1046.5].forEach(function (f, i) { bell(t + i * 0.26, sp, f, 0.2, 0.34); });
+    },
+    /* 心電図モニターの拍動音 */
+    pulse: function (t, out) { var g = gain(0, out); hit(g, t, 0.07, 0.004, 0.07); osc('sine', 880, g, t, t + 0.1); },
     tick: function (t, out) { clickAt(t, out, 2.6, 0.1); },
     boom: function (t, out) {
       var g = gain(0, out); hit(g, t, 0.9, 0.01, 2.6);
@@ -248,6 +255,13 @@
       var m1 = osc('sine', 4.3, gain(0.26, v.gain), t), m2 = osc('sine', 0.47, gain(0.2, v.gain), t);
       var p = osc('sine', 0.37, gain(26, a.frequency), t), p2 = osc('sine', 0.37, gain(26, b.frequency), t), fm = osc('sine', 1.3, gain(260, f1.frequency), t);
       return [a, b, m1, m2, p, p2, fm];
+    },
+    /* 心電図が一本の線になったときの警報音 */
+    flatline: function (out, t) { return [osc('sine', 988, gain(0.09, out), t), osc('sine', 1976, gain(0.012, out), t)]; },
+    /* 非常用電源のうなり */
+    genhum: function (out, t) {
+      var lp = filt('lowpass', 300, 1, gain(0.4, out));
+      return [osc('sawtooth', 50, lp, t), osc('sawtooth', 100.3, gain(0.4, lp), t), src(brown, filt('lowpass', 200, 0.5, gain(0.3, out)), t, 0, true)];
     },
     drone: function (out, t) {
       var lp = filt('lowpass', 170, 1.2, gain(0.55, out));

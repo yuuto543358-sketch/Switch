@@ -11,7 +11,9 @@ SW.IMAGES = {
   ch02_hall: 'assets/bg/ch02_hall.svg',      // 第2章：4階エレベーターホール
   ch02_room404: 'assets/bg/ch02_room404.svg',// 第2章：404号室（空室）
   ch03_gate: 'assets/bg/ch03_gate.svg',      // 第3章：灯ヶ丘駅・改札前
-  ch03_office: 'assets/bg/ch03_office.svg'   // 第3章：灯ヶ丘駅・駅務室
+  ch03_office: 'assets/bg/ch03_office.svg',  // 第3章：灯ヶ丘駅・駅務室
+  ch04_station: 'assets/bg/ch04_station.svg',// 第4章：病院・ナースステーション
+  ch04_icu: 'assets/bg/ch04_icu.svg'         // 第4章：病院・ICU 3番
 };
 
 /* 音声ファイル。何も書かなければ、ゲームが自動で作る音（合成音）が鳴る。
@@ -19,7 +21,7 @@ SW.IMAGES = {
    使える名前:
      効果音 … switch_on, switch_off, light_tink, tv_on, tv_off, chime, cut,
                door, tick, boom, beep, voice, ding, elev_door, lock, creak,
-               pa_chime, ring_tone, clunk, train
-     ループ … roomtone, hum, static, drone, night, elev, tv_muffled, station, pa_voice                               */
+               pa_chime, ring_tone, clunk, train, nursecall, pulse
+     ループ … roomtone, hum, static, drone, night, elev, tv_muffled, station, pa_voice, flatline, genhum                               */
 SW.AUDIO_FILES = {
 };
