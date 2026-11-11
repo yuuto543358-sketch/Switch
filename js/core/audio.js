@@ -142,6 +142,38 @@
       var o = osc('sawtooth', 96, f, t, t + 2.1); o.frequency.linearRampToValueAtTime(128, t + 0.9); o.frequency.linearRampToValueAtTime(84, t + 2);
       f.frequency.linearRampToValueAtTime(1500, t + 1); f.frequency.linearRampToValueAtTime(980, t + 2);
     },
+    /* 駅の放送の前に鳴るチャイム */
+    pa_chime: function (t, out) {
+      var sp = filt('bandpass', 1500, 0.4, gain(1.2, out));
+      [523.25, 659.25, 783.99, 1046.5].forEach(function (f, i) { bell(t + i * 0.42, sp, f, 0.34, 1.5); });
+    },
+    /* 呼び出し音（プルルル） */
+    ring_tone: function (t, out) {
+      var sp = filt('bandpass', 1100, 0.8, out);
+      [0, 1.1].forEach(function (d) {
+        var g = gain(0, sp); g.gain.setValueAtTime(0.0001, t + d); g.gain.linearRampToValueAtTime(0.16, t + d + 0.02);
+        g.gain.setValueAtTime(0.16, t + d + 0.7); g.gain.linearRampToValueAtTime(0.0001, t + d + 0.74);
+        var a = gain(1, g), l = osc('square', 18, gain(0.5, a.gain), t + d, t + d + 0.8);
+        osc('sine', 400, a, t + d, t + d + 0.8); osc('sine', 450, a, t + d, t + d + 0.8);
+      });
+    },
+    /* 自動販売機から缶が落ちる */
+    clunk: function (t, out) {
+      clickAt(t, out, 0.9, 0.3);
+      var g = gain(0, out); hit(g, t + 0.25, 0.7, 0.004, 0.2);
+      var o = osc('sine', 120, g, t + 0.25, t + 0.5); o.frequency.exponentialRampToValueAtTime(60, t + 0.42);
+      var g2 = gain(0, out); hit(g2, t + 0.27, 0.25, 0.003, 0.3);
+      src(white, filt('bandpass', 2600, 3, g2), t + 0.27, 0.35);
+      clickAt(t + 0.42, out, 1.4, 0.2);
+    },
+    /* ホームに電車が入ってくる */
+    train: function (t, out) {
+      var g = gain(0, out); g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5, t + 3.2); g.gain.exponentialRampToValueAtTime(0.0001, t + 6.5);
+      var f = filt('lowpass', 180, 0.7, g); f.frequency.linearRampToValueAtTime(520, t + 3.2); f.frequency.linearRampToValueAtTime(140, t + 6.5);
+      src(brown, f, t, 3.9); src(brown, f, t + 3.4, 3.4);
+      var g2 = gain(0, out); g2.gain.setValueAtTime(0.0001, t + 3); g2.gain.exponentialRampToValueAtTime(0.045, t + 4.4); g2.gain.exponentialRampToValueAtTime(0.0001, t + 6.4);
+      var o = osc('sawtooth', 2900, filt('bandpass', 2800, 9, g2), t + 3, t + 6.5); o.frequency.linearRampToValueAtTime(2300, t + 6.3);
+    },
     tick: function (t, out) { clickAt(t, out, 2.6, 0.1); },
     boom: function (t, out) {
       var g = gain(0, out); hit(g, t, 0.9, 0.01, 2.6);
@@ -201,6 +233,21 @@
       var m1 = osc('sine', 3.7, gain(0.22, v.gain), t), m2 = osc('sine', 0.61, gain(0.14, v.gain), t);
       var p = osc('sine', 0.23, gain(22, a.frequency), t), p2 = osc('sine', 0.31, gain(30, b.frequency), t), fm = osc('sine', 0.9, gain(160, f1.frequency), t);
       return [a, b, m1, m2, p, p2, fm, src(crackle, filt('bandpass', 700, 0.6, gain(0.1, lp)), t, 0, true)];
+    },
+    /* 駅の構内：空調と、遠い低い響き */
+    station: function (out, t) {
+      return [src(brown, filt('lowpass', 300, 0.3, gain(0.55, out)), t, 0, true),
+              osc('sine', 100, gain(0.02, out), t), osc('sine', 150.4, gain(0.01, out), t),
+              src(white, filt('bandpass', 2400, 0.5, gain(0.012, out)), t, 0, true)];
+    },
+    /* 構内放送の声（言葉は聞き取れない、スピーカー越しの声） */
+    pa_voice: function (out, t) {
+      var sp = filt('bandpass', 1300, 0.7, gain(1, out));
+      var v = gain(0.3, sp), f1 = filt('bandpass', 760, 3, v), f2 = filt('bandpass', 1700, 5, gain(0.5, v));
+      var a = osc('sawtooth', 196, f1, t), b = osc('sawtooth', 197.5, f2, t);
+      var m1 = osc('sine', 4.3, gain(0.26, v.gain), t), m2 = osc('sine', 0.47, gain(0.2, v.gain), t);
+      var p = osc('sine', 0.37, gain(26, a.frequency), t), p2 = osc('sine', 0.37, gain(26, b.frequency), t), fm = osc('sine', 1.3, gain(260, f1.frequency), t);
+      return [a, b, m1, m2, p, p2, fm];
     },
     drone: function (out, t) {
       var lp = filt('lowpass', 170, 1.2, gain(0.55, out));
