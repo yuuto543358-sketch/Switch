@@ -74,8 +74,8 @@
     '.c4-nclamp{left:844px;top:351px;width:18px;height:18px;border-radius:50%;background:#ff5a48;box-shadow:0 0 8px 3px rgba(255,70,50,.9);opacity:0}' +
     '.c4-nclamp.ring{animation:c4ring .9s steps(1) infinite}.c4-nclamp.on{opacity:1}' +
     '@keyframes c4ring{0%{opacity:1}50%{opacity:0}}' +
-    '.c4-ncbtn{left:1084px;top:318px;width:48px;height:48px;border-radius:50%;background:#b9b4a3;box-shadow:0 0 0 2px #8f8a78 inset}' +
-    '.c4-ncbtn.on{background:#ffd08a;box-shadow:0 0 0 2px #c98a2e inset,0 0 12px 4px rgba(255,180,80,.7)}' +
+    '.c4-ncbtn{left:1084px;top:318px;width:48px;height:48px;border-radius:50%;opacity:0}' +
+    '.c4-ncbtn.on{opacity:1;background:#ffd08a;box-shadow:0 0 0 2px #c98a2e inset,0 0 12px 4px rgba(255,180,80,.7)}' +
     '.c4-pc{left:1256px;top:486px;width:288px;height:164px;opacity:0;background:#0b2a4a;color:#dbe9f6;font:11px/15.5px "Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",sans-serif;padding:7px 9px;box-sizing:border-box;white-space:pre;overflow:hidden;box-shadow:0 0 30px 6px rgba(90,150,220,.25)}' +
     '.c4-pc.on{opacity:1}.c4-pc b{display:block;background:#dbe9f6;color:#0b2a4a;margin:-7px -9px 5px;padding:3px 9px;font-weight:700}.c4-pc u{text-decoration:none;background:#f6d98a;color:#1a1a1a}' +
     '.c4-pcled{left:1536px;top:658px;width:6px;height:4px;border-radius:2px;background:#ffb65c;box-shadow:0 0 5px 1px rgba(255,170,70,.8)}.c4-pcled.on{background:#5dff8f;box-shadow:0 0 5px 1px rgba(80,255,140,.8)}' +
@@ -196,7 +196,7 @@
     await U.say([
       '応答のボタンを押すと、呼び出し音が止んだ。',
       '点いているランプの下には、「ICU-3」とある。',
-      f.ch04_sawRecord ? '記録にあった、俺が運ばれた部屋だ。' : '集中治療室の、三番。'
+      f.ch04_sawRecord ? '記録にあった、俺が運ばれた部屋だ。' : '「ICU」。——重い患者が入る部屋だ。'
     ]);
     A.se('crackle');
     await SW.wait(1400);
@@ -366,8 +366,8 @@
         '「二十時十七分　停電。非常用電源、起動せず」',
         '「人工呼吸器、モニター、停止」',
         '「二十時十九分　佐伯看護師、手で換気を続ける」',
-        ren('佐伯……美咲。'),
         '「二十時▒▒分　佐伯 美咲　二十九歳　当院看護師　——患者として収容」',
+        ren('……美咲。'),
         'その先は、黒く塗りつぶされている。',
         '美咲は、ここの看護師だった。そして同じ夜、患者になった。'
       ]);
