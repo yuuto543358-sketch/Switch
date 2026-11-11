@@ -64,7 +64,7 @@
     SW.saveProfile();
     if (ch.stop) ch.stop(); SW.scene.clear();
     if (hasNext) {
-      SW.game.chapter = nextId; SW.game.checkpoint = SW.game.beat = 'start'; SW.saveGame();
+      SW.game.chapter = nextId; SW.checkpoint('start');
       return startChapter();
     }
     SW.clearSave(); menuBtn.classList.remove('on');

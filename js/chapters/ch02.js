@@ -191,13 +191,17 @@
     await SW.wait(700);
     await U.say([
       '四階の、エレベーターホール。',
-      v.light ? '誰もいない。蛍光灯が一本、切れかけて瞬いている。' : '明かりが、すべて消えている。エレベーターの表示だけが、暗がりに浮かんでいる。',
+      v.light ? '誰もいない。蛍光灯が一本、切れかけて瞬いている。'
+        : obeyed ? '誰もいない。共用灯を消すと、非常口の緑と、エレベーターの表示だけが残った。'
+        : '明かりが、すべて消えている。非常口の緑と、エレベーターの表示だけが、暗がりに浮かんでいる。',
       ren('……誰か、いたはずなんだ。')
     ]);
     if (S.isNarrow()) U.note('画面を指でなぞると、あたりを見回せる。', 2600);
 
     hooks.light = function (on) { U.note(on ? '共用灯が点いた。廊下には、やはり誰もいない。' : '共用灯を消した。手すりの向こうに、街の明かりが滲んでいる。'); };
+    var rungEarly = false;
     hooks.bell = function () {
+      rungEarly = true;
       SWT.set(BELL, true, 'player'); A.se('chime', { muffle: true }); SWT.set(BELL, false, 'system');
       U.note('隣の、四〇四号室の呼び鈴。……応答はない。空室なのだから、当たり前だ。');
     };
@@ -216,12 +220,12 @@
     await U.say([
       ren('……テレビの音？'),
       '隣の四〇四号室から、聞こえてくる。',
-      'あの部屋は、ずっと空室のはずだ。'
+      rungEarly ? 'さっき呼び鈴を押したときは、何の音もしなかった。' : 'あの部屋は、ずっと空室のはずだ。'
     ]);
     SWT.event(BELL, 'tv_sound_heard');
 
     var rang = false;
-    hooks.light = function (on) { U.note(on ? 'テレビの音は、まだ続いている。' : '暗い廊下に、四〇四号室のドアの下から、青白い光が漏れている。'); };
+    hooks.light = function (on) { U.note(on ? 'テレビの音は、まだ続いている。' : SWT.isOn(EMG) ? '共用灯を消しても、テレビの音は続いている。' : '暗い廊下に、四〇四号室のドアの下から、青白い光が漏れている。'); };
     hooks.door = function () { U.note('ドアの向こうで、誰かが笑ったような気がした。……テレビの音だ。'); };
     hooks.bell = function () { rang = true; };
     S.hint(BELL, true);
@@ -236,7 +240,7 @@
     if (snd.tv) { snd.tv.stop(0.03); snd.tv = null; }
     q('.c2-gap').style.animation = 'none'; q('.c2-gap').style.opacity = .8;
     await SW.wait(2000);
-    await U.say(['呼び鈴を押した途端、テレビの音が、ぴたりと止んだ。']);
+    await U.say([rungEarly ? 'もう一度、呼び鈴を押した。その途端、テレビの音が、ぴたりと止んだ。' : '呼び鈴を押した途端、テレビの音が、ぴたりと止んだ。']);
     A.se('lock');
     await SW.wait(1200);
     A.se('creak'); q('.c2-ajar').classList.add('on'); show('.c2-dk-ajar', true);
@@ -245,7 +249,7 @@
     await U.say([
       '鍵の開く音。',
       'ドアが、内側から、ゆっくりと開いた。',
-      v.light ? '……誰も、出てこない。' : '暗い廊下に、青白い光が細く伸びる。……誰も、出てこない。',
+      (v.light || SWT.isOn(EMG)) ? '……誰も、出てこない。' : '暗い廊下に、青白い光が細く伸びる。……誰も、出てこない。',
       ren('……すみません。誰か、いますか。')
     ]);
     snd.tv = A.loop('tv_muffled', 0.3, 1.5);
@@ -445,26 +449,32 @@
     ]);
 
     var litOnce = false, offs = 0, found = false;
+    var synced = false;   // 明かりと映像が連動することに、もう気づいたか
     hooks.light = function (on) {
       if (on) {
-        if (v.unknown) { v.unknown = false; U.note('画面の中の部屋も、明るくなった。……振り返る。入口には、誰もいない。'); }
-        else U.note(litOnce ? '画面の中の部屋も、同時に明るくなる。' : '明かりを点けると、画面の中の部屋も、同時に明るくなった。');
+        if (v.unknown) { v.unknown = false; U.note(v.tv ? '画面の中の部屋も、明るくなった。……振り返る。入口には、誰もいない。' : '明かりを点けて、振り返る。入口には、誰もいない。'); }
+        else if (!v.tv) U.note('明かりを点けた。家具のない、がらんとした部屋だ。');
+        else { U.note(synced ? '画面の中の部屋も、同時に明るくなる。' : '明かりを点けると、画面の中の部屋も、同時に明るくなった。'); synced = true; }
         litOnce = true;
       } else {
         offs++;
-        if (offs === 1 && v.tv) { v.unknown = true; SW.game.flags.ch02_unknownSeen = true; SWT.event(TV4, 'unknown_in_doorway'); U.note('画面の中でも、明かりが消えた。……入口に、誰かが立っている。'); }
-        else U.note('画面の中でも、明かりが消えた。');
+        if (!v.tv) U.note('明かりを消した。窓の外の街明かりだけが、部屋に残った。');
+        else if (!SW.game.flags.ch02_unknownSeen) { v.unknown = true; synced = true; SW.game.flags.ch02_unknownSeen = true; SWT.event(TV4, 'unknown_in_doorway'); U.note('画面の中でも、明かりが消えた。……入口に、誰かが立っている。'); }
+        else { U.note('画面の中でも、明かりが消えた。'); synced = true; }
       }
     };
     hooks.power = function () {
       var on = SWT.toggle(TV4, 'player'); A.se(on ? 'tv_on' : 'tv_off'); setTV(on);
-      U.note(on ? '電源を入れると、また同じ映像が映った。背中は、こちらを向かない。' : '本体の電源ボタンを押した。画面は、素直に消えた。');
+      U.note(!on ? '本体の電源ボタンを押した。画面は、素直に消えた。'
+        : v.unknown ? '電源を入れると、また同じ映像が映った。入口の人影は、まだそこにいる。'
+        : '電源を入れると、また同じ映像が映った。背中は、こちらを向かない。');
     };
     hooks.screen = function () {
       U.note(v.tv ? '隅に、時刻が出ている。20:17。秒だけが、進んでは戻る。' : '消えた画面に、部屋がぼんやりと映り込んでいる。');
     };
+    var wantPhoto = false;
     hooks.photo = function () {
-      if (v.light) return;
+      if (v.light) { wantPhoto = true; return; }
       U.note('壁に、何か貼られている。暗くて、よく見えない。'); S.hint(L404, true); S.focus(700, 640, 1, 1600);
     };
     if (v.light) litOnce = true;   // 文章が出る前に、もう明かりを点けていた場合
@@ -473,7 +483,7 @@
       U.note('暗くて、部屋の様子がよく分からない。'); S.hint(L404, true); S.focus(700, 640, 1, 1800);
       await SW.until(function () { return litOnce; });
     }
-    await SW.wait(2600);
+    await SW.until(function () { return wantPhoto; }, 2600);
     if (!v.light) await SW.until(function () { return v.light; });
     await SW.wait(500);
 
@@ -481,7 +491,7 @@
     hooks = {}; U.noteHide();
     var ph = document.getElementById('photo');
     S.focus(1052, 560, 1.25, 2400);
-    await U.say(['壁に、写真が一枚、貼られている。']);
+    await U.say([wantPhoto ? '壁の写真を、手に取った。' : '壁に、写真が一枚、貼られている。']);
     ph.classList.add('on'); void ph.offsetWidth; ph.classList.add('show');
     await SW.wait(1200);
     await U.say([
@@ -544,12 +554,17 @@
     }
     /* 明かりが落ち、廊下でエレベーターが鳴る */
     await SW.wait(700);
-    if (v.light) { SWT.set(L404, false, 'system'); A.se('switch_off'); setRoomLight(false, true); }
+    var wasLit = v.light;
+    if (wasLit) { SWT.set(L404, false, 'system'); SWT.event(L404, 'self_off'); A.se('switch_off'); setRoomLight(false, true); }
     A.stopAll(0.2);
-    await SW.wait(2200);
+    await SW.wait(wasLit ? 1600 : 2200);
+    if (wasLit) await U.say(['部屋の明かりが、ひとりでに消えた。']);
     A.se('ding', { far: true });
     await SW.wait(2400);
-    await U.say(['廊下で、エレベーターの到着を告げる音がした。', '呼んだ覚えは、ない。']);
+    await U.say([
+      '廊下で、エレベーターの到着を告げる音がした。',
+      SWT.count(ELEV) > 0 ? '……今は、誰も呼んでいない。' : '呼んだ覚えは、ない。'
+    ]);
     await U.fade(1, 0);
     await SW.wait(1400);
   }

@@ -19,6 +19,7 @@
 
   /* ---- ゲーム1回分のデータ ---- */
   SW.game = null;
+  var entry = null;   // 最後に通った「場面の入口」の記録
   SW.ORDER = ['ch01', 'ch02'];     // 章の順番
   /* 指定した章の最初から始める。前の章をクリアした時の記録を引き継ぐ */
   SW.newGame = function (chapter) {
@@ -26,16 +27,19 @@
     var prev = SW.profile.snap[SW.ORDER[SW.ORDER.indexOf(chapter) - 1]];
     prev = prev ? JSON.parse(JSON.stringify(prev)) : { flags: {}, switches: {} };
     SW.game = { chapter: chapter, checkpoint: 'start', switches: prev.switches, flags: prev.flags, beat: 'start' };
+    entry = null;
     return SW.game;
   };
   SW.unlocked = function (chapter) {
     var i = SW.ORDER.indexOf(chapter);
     return i === 0 || !!SW.profile.clears[SW.ORDER[i - 1]];
   };
-  SW.saveGame = function () { if (SW.game) write(SAVE_KEY, SW.game); };
+  /* セーブされるのは、最後に通った「場面の入口」の時点の記録。
+     場面の途中でやめても、再開したときにスイッチや記録が食い違わない。 */
+  SW.saveGame = function () { if (entry) write(SAVE_KEY, entry); };
   SW.loadGame = function () {
     var g = read(SAVE_KEY);
-    if (g && g.chapter && SW.chapters[g.chapter]) { SW.game = g; return g; }
+    if (g && g.chapter && SW.chapters[g.chapter]) { SW.game = g; entry = JSON.parse(JSON.stringify(g)); return g; }
     return null;
   };
   SW.hasSave = function () { var g = read(SAVE_KEY); return !!(g && g.chapter && SW.chapters[g.chapter]); };
@@ -43,7 +47,10 @@
   SW.eraseAll = function () {
     try { localStorage.removeItem(SAVE_KEY); localStorage.removeItem(PROFILE_KEY); } catch (e) {}
   };
-  SW.checkpoint = function (name) { SW.game.checkpoint = name; SW.game.beat = name; SW.saveGame(); };
+  SW.checkpoint = function (name) {
+    SW.game.checkpoint = name; SW.game.beat = name;
+    entry = JSON.parse(JSON.stringify(SW.game)); SW.saveGame();
+  };
 
   SW.chapters = {};
 

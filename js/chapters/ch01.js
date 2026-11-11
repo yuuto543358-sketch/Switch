@@ -296,14 +296,14 @@
     SWT.event(LIGHT, 'first_switch');
     U.noteHide();
     hooks.tv = null; hooks.remote = deadRemote;
-    hooks.light = function (on) { if (!on) U.note('……いや、点けておこう。'); };
+    hooks.light = function (on) { U.note(on ? 'もう一度、明かりを点けた。' : '明かりを消した。部屋は、また暗くなった。'); };
     S.focus(1180, 640, 1, 2600);
     await SW.wait(900);
     await U.card('CHAPTER 01', 'FIRST SWITCH', 3400);
     await SW.wait(900);
     await U.say([
       ren('……ただいま。'),
-      '返事はない。ここで一人で暮らして、もう何年になるだろう。',
+      v.light ? '返事はない。ここで一人で暮らして、もう何年になるだろう。' : '暗い部屋から、返事はない。ここで一人で暮らして、もう何年になるだろう。',
       'すぐには、思い出せなかった。'
     ]);
   }
@@ -314,11 +314,16 @@
   async function beatTV() {
     SW.checkpoint('tv');
     hooks = {};
+    hooks.remote = function () {
+      SW.game.flags.ch01_remoteDead = true; SWT.event(TV, 'remote_no_response');
+      U.note('リモコンの電源ボタンを押した。……テレビは、反応しない。');
+    };
     if (S.isNarrow()) U.note('画面を指でなぞると、部屋を見回せる。', 2400);
     await SW.wait(2600);
     U.noteHide();
     v.clock17 = true; setClock('20:17'); A.se('tick');
     await SW.wait(900);
+    hooks = {};
     SWT.set(TV, true, 'system'); SWT.event(TV, 'self_on');
     A.se('tv_on'); setTV('static');
     S.focus(960, 660, 1, 1800);
@@ -343,7 +348,10 @@
       await SW.wait(1600);
       pending = false; moved = true;
     });
-    hooks.light = function (on) { U.note(on ? '明かりを点けても、ノイズは消えない。' : 'テレビの光だけが、部屋を青白く照らしている。'); };
+    hooks.light = function (on) {
+      if (v.tv === 'off') U.note(on ? '明かりを点けた。テレビは、消えたままだ。' : '明かりを消した。部屋は、真っ暗になった。');
+      else U.note(on ? '明かりを点けても、ノイズは消えない。' : 'テレビの光だけが、部屋を青白く照らしている。');
+    };
     hooks.icom = SW.guard(async function () { U.note('モニターには、何も映っていない。'); await lcdPeek(); });
 
     await SW.until(function () { return moved; }, 9000);
@@ -358,7 +366,7 @@
     S.focus(960, 600, 1.1, 7000, 'ease-in-out');
     for (var i = 1; i <= 30; i++) { v.clarity = i / 30 * 0.8; await SW.wait(110); }
     await U.say([
-      'ノイズの奥から、人の輪郭が浮かび上がってくる。',
+      v.light ? 'ノイズの奥から、人の輪郭が浮かび上がってくる。' : '暗い部屋の中で、ノイズの奥から、人の輪郭が浮かび上がってくる。',
       '女性だ。どこかの廊下に立って、まっすぐこちらを見ている。',
       ren('……誰だ？'),
       '知らない顔だ。——そのはずなのに、なぜか目を逸らせない。'
@@ -390,7 +398,8 @@
     hooks.remote = function () {
       tvTaps++; SWT.set(TV, true, 'player');
       SW.game.flags.ch01_tvOffTries = (SW.game.flags.ch01_tvOffTries || 0) + 1;
-      U.note(tvTaps === 1 ? 'リモコンを押しても、もう消えない。' : '何度押しても、彼女は画面の中にいる。');
+      var before = SW.game.flags.ch01_tvOffTries > tvTaps;   // この場面より前に、消せたことがあるか
+      U.note(tvTaps > 1 ? '何度押しても、彼女は画面の中にいる。' : before ? 'リモコンを押しても、もう消えない。' : 'リモコンを押しても、消えない。');
     };
     hooks.light = function (on) { U.note(on ? '呼び出しのランプは、まだ点滅している。' : '暗闇の中で、呼び出しのランプだけが点滅している。'); };
     S.hint(ICOM, true);
@@ -477,7 +486,7 @@
       await U.say([
         'テレビは、ひとりでに消えた。',
         '部屋は、何事もなかったように静かだ。',
-        '照明だけが、点いている。'
+        '言われたとおり、照明は点けたままにしてある。'
       ]);
       await SW.wait(600);
       A.stopAll(0.05);
