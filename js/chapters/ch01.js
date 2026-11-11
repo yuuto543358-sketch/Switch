@@ -13,27 +13,31 @@
   var A = SW.audio, U = SW.ui, S = SW.scene, SWT = SW.switches;
   var LIGHT = 'LIGHT_ROOM_01', TV = 'TV_01', ICOM = 'INTERCOM_01', REMOTE = 'REMOTE_TV_01';   // リモコンは TV_01 を切り替える道具
 
-  var v, hooks, snd, raf;   // v = この章の見た目の状態
+  var v, hooks, snd, raf, dk;   // v = この章の見た目の状態　dk = 暗さのレイヤー
+
+  /* 暗さのレイヤーの中身：部屋の写真に「掛け算」で重ねる。白いところほど明るく残る */
+  function darkSVG(on) {
+    function g(f, inner) { return '<g filter="url(#b' + f + ')" style="mix-blend-mode:lighten">' + inner + '</g>'; }
+    return '<defs><filter id="b60" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="60"/></filter>' +
+      '<filter id="b30" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="28"/></filter>' +
+      '<filter id="b6" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="7"/></filter></defs>' +
+      '<rect width="1920" height="1080" fill="#06080e"/>' +
+      g(60, '<ellipse cx="320" cy="500" rx="430" ry="520" fill="#262f48"/>') +
+      g(30, '<path d="M130 800L530 800L1080 1080L250 1080Z" fill="#4e5b82"/>') +
+      g(6, '<rect x="100" y="160" width="412" height="634" fill="#9aa6c8"/>') +
+      (on.door === false ? '' : g(30, '<ellipse cx="1830" cy="790" rx="120" ry="34" fill="#4a4336"/>')) +
+      g(30, '<ellipse cx="1443" cy="509" rx="34" ry="46" fill="#17361f"/>') +
+      (on.tv ? g(60, '<ellipse cx="960" cy="560" rx="640" ry="400" fill="' + (on.tv === 2 ? '#2c3a36' : '#3a4662') + '"/>' +
+        '<ellipse cx="960" cy="920" rx="560" ry="170" fill="' + (on.tv === 2 ? '#34443f' : '#465273') + '"/>') : '') +
+      (on.icom ? g(30, '<ellipse cx="1578" cy="500" rx="125" ry="125" fill="#33423a"/>') : '');
+  }
 
   var HTML =
     '<img class="ly" src="' + SW.IMAGES.ch01_room + '" alt="" draggable="false">' +
     /* 照明スイッチの操作部（光らない部分） */
     '<div class="abs c1-rocker"></div>' +
     /* 暗さのレイヤー：部屋の写真に「掛け算」で重ねる。白いところほど明るく残る */
-    '<svg class="ly c1-dark" viewBox="0 0 1920 1080" preserveAspectRatio="none">' +
-      '<defs><filter id="c1b60" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="60"/></filter>' +
-      '<filter id="c1b30" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="28"/></filter>' +
-      '<filter id="c1b6" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="7"/></filter></defs>' +
-      '<rect width="1920" height="1080" fill="#06080e"/>' +
-      '<g filter="url(#c1b60)" style="mix-blend-mode:lighten"><ellipse cx="320" cy="500" rx="430" ry="520" fill="#262f48"/></g>' +
-      '<g filter="url(#c1b30)" style="mix-blend-mode:lighten"><path d="M130 800L530 800L1080 1080L250 1080Z" fill="#4e5b82"/></g>' +
-      '<g filter="url(#c1b6)" style="mix-blend-mode:lighten"><rect x="100" y="160" width="412" height="634" fill="#9aa6c8"/></g>' +
-      '<g class="c1-dk-door" filter="url(#c1b30)" style="mix-blend-mode:lighten"><ellipse cx="1830" cy="790" rx="120" ry="34" fill="#4a4336"/></g>' +
-      '<g class="c1-dk-lamp" filter="url(#c1b30)" style="mix-blend-mode:lighten"><ellipse cx="1443" cy="509" rx="34" ry="46" fill="#17361f"/></g>' +
-      '<g class="c1-dk-tv" filter="url(#c1b60)" style="mix-blend-mode:lighten;display:none">' +
-        '<ellipse class="c1-tvA" cx="960" cy="560" rx="640" ry="400" fill="#3a4662"/><ellipse class="c1-tvB" cx="960" cy="920" rx="560" ry="170" fill="#465273"/></g>' +
-      '<g class="c1-dk-icom" filter="url(#c1b30)" style="mix-blend-mode:lighten;display:none"><ellipse cx="1578" cy="500" rx="125" ry="125" fill="#33423a"/></g>' +
-    '</svg>' +
+    '<canvas class="ly c1-dark" width="640" height="360"></canvas>' +
     /* 光るもの */
     '<div class="abs c1-tvglow"></div>' +
     '<canvas class="abs c1-tv" width="232" height="130"></canvas>' +
@@ -95,10 +99,8 @@
     var on = mode !== 'off';
     q('.c1-tv').style.opacity = on ? 1 : 0;
     q('.c1-tvled').classList.toggle('on', on);
-    q('.c1-dk-tv').style.display = on ? '' : 'none';
     var woman = mode === 'woman';
-    q('.c1-tvA').setAttribute('fill', woman ? '#2c3a36' : '#3a4662');
-    q('.c1-tvB').setAttribute('fill', woman ? '#34443f' : '#465273');
+    dk.set('tv', !on ? 0 : woman ? 2 : 1);
     q('.c1-tvglow').style.setProperty('--g', woman ? 'rgba(140,190,165,.42)' : 'rgba(150,175,235,.5)');
     if (!on) q('.c1-tvglow').style.opacity = 0;
     if (on && !snd.static) snd.static = A.loop('static', 0.001, 0.05);
@@ -189,7 +191,7 @@
   function setLCD(mode) {
     v.lcd = mode;
     q('.c1-lcd').style.opacity = mode === 'off' ? 0 : 1;
-    q('.c1-dk-icom').style.display = mode === 'view' ? '' : 'none';
+    dk.set('icom', mode === 'view');
   }
   function drawLCD(now) {
     var c = q('.c1-lcd').getContext('2d'), k, i;
@@ -250,6 +252,7 @@
     v = { light: false, tv: 'off', clarity: 0, gaze: 0, mouth: false, lcd: 'off', figure: false, clock17: false, clock18: false };
     hooks = {}; snd = {};
     S.mount(HTML);
+    dk = S.shade(q('.c1-dark'), darkSVG);
     S.hotspot(LIGHT, [1383, 440, 120, 140], '照明のスイッチ', tapLight);
     S.hotspot(REMOTE, [826, 896, 268, 92], 'テレビのリモコン', tapRemote);
     S.hotspot(TV, [708, 398, 504, 300], 'テレビ', tapTV);
@@ -466,7 +469,7 @@
       /* 消した */
       SW.game.flags.ch01_obeyed = false; SWT.event(LIGHT, 'disobeyed');
       if (snd.room) snd.room.stop(0.1);
-      q('.c1-doorgap').style.opacity = 0; q('.c1-dk-door').style.display = 'none';
+      q('.c1-doorgap').style.opacity = 0; dk.set('door', false);
       await SW.wait(700);
       v.clarity = 0.25; await SW.wait(500);
       A.se('tv_off'); setTV('off'); SWT.set(TV, false, 'system');

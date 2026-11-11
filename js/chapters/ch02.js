@@ -22,12 +22,36 @@
   var v, hooks, snd, raf;
   var imgHall = new Image(), imgRoom = new Image();
   imgHall.src = SW.IMAGES.ch02_hall; imgRoom.src = SW.IMAGES.ch02_room404;
+  var thumbRoom = S.thumb(imgRoom, 90, 50), thumbHall = S.thumb(imgHall, 96, 68, 560, 120, 1240, 878);
 
   var BLUR = '<defs><filter id="c2b60" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="60"/></filter>' +
     '<filter id="c2b30" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="28"/></filter>' +
     '<filter id="c2b6" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="7"/></filter></defs>';
-  function grp(cls, f, inner, hidden) {
-    return '<g class="' + cls + '" filter="url(#c2b' + f + ')" style="mix-blend-mode:lighten' + (hidden ? ';display:none' : '') + '">' + inner + '</g>';
+  function grp(f, inner) { return '<g filter="url(#c2b' + f + ')" style="mix-blend-mode:lighten">' + inner + '</g>'; }
+  var dk;   // 暗さのレイヤー（S.shade）
+
+  /* 暗さのレイヤーの中身。on.○○ が true のものだけ描く */
+  function darkHall(on) {
+    return BLUR + '<rect width="1920" height="1080" fill="#05070b"/>' +
+      grp(60, '<ellipse cx="240" cy="700" rx="420" ry="300" fill="#222a40"/>') +
+      grp(30, '<path d="M0 820L420 820L700 1080L0 1080Z" fill="#3a4566"/>') +
+      grp(6, '<rect x="0" y="92" width="404" height="470" fill="#9aa6c8"/>') +
+      grp(30, '<ellipse cx="1805" cy="250" rx="230" ry="180" fill="#1c3a26"/>') +
+      grp(30, '<ellipse cx="760" cy="200" rx="70" ry="44" fill="#3a2a14"/>') +
+      (on.emg ? grp(60, '<ellipse cx="1074" cy="640" rx="470" ry="440" fill="#8a8674"/><ellipse cx="1074" cy="420" rx="220" ry="220" fill="#c9c4ae"/>') : '') +
+      (on.el ? grp(30, '<ellipse cx="760" cy="540" rx="300" ry="400" fill="#4a4840"/><path d="M600 820L920 820L1120 1080L400 1080Z" fill="#8f8c7c"/>') +
+               grp(6, '<rect x="622" y="252" width="276" height="568" fill="#ffffff"/>') : '') +
+      (on.gap ? grp(30, '<ellipse cx="1425" cy="842" rx="200" ry="52" fill="#3c4a6e"/>') : '') +
+      (on.ajar ? grp(60, '<ellipse cx="1330" cy="620" rx="190" ry="330" fill="#36425f"/>') : '');
+  }
+  function darkRoom(on) {
+    return BLUR + '<rect width="1920" height="1080" fill="#06080e"/>' +
+      grp(60, '<ellipse cx="1600" cy="500" rx="430" ry="520" fill="#262f48"/>') +
+      grp(30, '<path d="M1790 800L1390 800L840 1080L1670 1080Z" fill="#4e5b82"/>') +
+      grp(6, '<rect x="1408" y="160" width="412" height="634" fill="#9aa6c8"/>') +
+      grp(30, '<ellipse cx="477" cy="509" rx="34" ry="46" fill="#17361f"/>') +
+      (on.tv ? grp(60, '<ellipse cx="980" cy="640" rx="580" ry="390" fill="#36425c"/><ellipse cx="980" cy="940" rx="520" ry="170" fill="#44506f"/>') : '') +
+      (on.mon ? grp(30, '<ellipse cx="342" cy="500" rx="125" ry="125" fill="#33423a"/>') : '');
   }
 
   /* ================= ホール ================= */
@@ -37,19 +61,7 @@
     '<div class="abs c2-eldoors"><i class="l"></i><i class="r"></i></div>' +
     '<div class="abs c2-doorshade"></div>' +
     '<div class="abs c2-flick"></div>' +
-    '<svg class="ly c2-dark" viewBox="0 0 1920 1080" preserveAspectRatio="none">' + BLUR +
-      '<rect width="1920" height="1080" fill="#05070b"/>' +
-      grp('', 60, '<ellipse cx="240" cy="700" rx="420" ry="300" fill="#222a40"/>') +
-      grp('', 30, '<path d="M0 820L420 820L700 1080L0 1080Z" fill="#3a4566"/>') +
-      grp('', 6, '<rect x="0" y="92" width="404" height="470" fill="#9aa6c8"/>') +
-      grp('c2-dk-exit', 30, '<ellipse cx="1805" cy="250" rx="230" ry="180" fill="#1c3a26"/>') +
-      grp('', 30, '<ellipse cx="760" cy="200" rx="70" ry="44" fill="#3a2a14"/>') +
-      grp('c2-dk-emg', 60, '<ellipse cx="1074" cy="640" rx="470" ry="440" fill="#8a8674"/><ellipse cx="1074" cy="420" rx="220" ry="220" fill="#c9c4ae"/>', 1) +
-      grp('c2-dk-el', 30, '<ellipse cx="760" cy="540" rx="300" ry="400" fill="#4a4840"/><path d="M600 820L920 820L1120 1080L400 1080Z" fill="#8f8c7c"/>', 1) +
-      grp('c2-dk-el', 6, '<rect x="622" y="252" width="276" height="568" fill="#ffffff"/>', 1) +
-      grp('c2-dk-gap', 30, '<ellipse cx="1425" cy="842" rx="200" ry="52" fill="#3c4a6e"/>', 1) +
-      grp('c2-dk-ajar', 60, '<ellipse cx="1330" cy="620" rx="190" ry="330" fill="#36425f"/>', 1) +
-    '</svg>' +
+    '<canvas class="ly c2-dark" width="640" height="360"></canvas>' +
     '<div class="abs c2-tube" style="left:484px"></div><div class="abs c2-tube b" style="left:1284px"></div>' +
     '<div class="abs c2-ind">1</div>' +
     '<div class="abs c2-call"></div>' +
@@ -114,7 +126,7 @@
     else if (snd.hum) { snd.hum.stop(0.05); snd.hum = null; }
   }
   function setEmg(on) { q('.c2-emg').classList.toggle('on', on); show('.c2-dk-emg', on); }
-  function show(sel, on) { document.querySelectorAll('#scene ' + sel).forEach(function (e) { e.style.display = on ? '' : 'none'; }); }
+  function show(sel, on) { dk.set(sel.replace('.c2-dk-', ''), !!on); }
   function setFloor(n) { v.floor = n; q('.c2-ind').textContent = n; }
   function doors(open) { q('.c2-eldoors').classList.toggle('open', open); show('.c2-dk-el', open); A.se('elev_door'); }
 
@@ -152,6 +164,7 @@
     v = { scene: 'hall', light: false, floor: 1, calls: 0, elBusy: false, ops: 0 };
     hooks = {}; snd = snd || {};
     S.mount(HTML_HALL);
+    dk = S.shade(q('.c2-dark'), darkHall);
     S.hotspot(HALL, [1029, 464, 120, 130], '共用灯のスイッチ', function () {
       var on = SWT.toggle(HALL, 'player'); A.se(on ? 'switch_on' : 'switch_off'); setHallLight(on, true); v.ops++;
       S.hint(HALL, false); if (hooks.light) hooks.light(on);
@@ -268,15 +281,7 @@
   var HTML_ROOM =
     '<img class="ly" src="' + SW.IMAGES.ch02_room404 + '" alt="" draggable="false">' +
     '<div class="abs c2-rocker" style="left:463px;top:487px"></div>' +
-    '<svg class="ly c2-dark" viewBox="0 0 1920 1080" preserveAspectRatio="none">' + BLUR +
-      '<rect width="1920" height="1080" fill="#06080e"/>' +
-      grp('', 60, '<ellipse cx="1600" cy="500" rx="430" ry="520" fill="#262f48"/>') +
-      grp('', 30, '<path d="M1790 800L1390 800L840 1080L1670 1080Z" fill="#4e5b82"/>') +
-      grp('', 6, '<rect x="1408" y="160" width="412" height="634" fill="#9aa6c8"/>') +
-      grp('', 30, '<ellipse cx="477" cy="509" rx="34" ry="46" fill="#17361f"/>') +
-      grp('c2-dk-tv', 60, '<ellipse cx="980" cy="640" rx="580" ry="390" fill="#36425c"/><ellipse cx="980" cy="940" rx="520" ry="170" fill="#44506f"/>') +
-      grp('c2-dk-mon', 30, '<ellipse cx="342" cy="500" rx="125" ry="125" fill="#33423a"/>', 1) +
-    '</svg>' +
+    '<canvas class="ly c2-dark" width="640" height="360"></canvas>' +
     '<div class="abs c2-tvglow"></div>' +
     '<canvas class="abs c2-tv" width="180" height="101"></canvas>' +
     '<div class="abs c2-tvled"></div>' +
@@ -319,7 +324,7 @@
      ゲーム画面と同じ絵を縮めて使い、そこに蓮の背中を描き足している。 */
   function drawFeed() {
     var c = low.getContext('2d'), k, t = v.turn;
-    try { c.drawImage(imgRoom, 0, 0, 90, 50); } catch (e) { c.fillStyle = '#777'; c.fillRect(0, 0, 90, 50); }
+    c.drawImage(thumbRoom, 0, 0);
     if (!v.light) { c.fillStyle = 'rgba(4,6,13,.88)'; c.fillRect(0, 0, 90, 50); }
     // 映像の中のテレビ（映像の中に、また映像）
     k = c.createRadialGradient(46, 33, 2, 46, 33, 30); k.addColorStop(0, 'rgba(170,195,255,' + (v.light ? .25 : .5) + ')'); k.addColorStop(1, 'rgba(120,150,230,0)');
@@ -351,7 +356,7 @@
   }
   function drawLCD() {
     var c = q('.c2-lcd').getContext('2d'), k;
-    try { c.drawImage(imgHall, 560, 120, 1240, 878, 0, 0, 96, 68); } catch (e) { c.fillStyle = '#566'; c.fillRect(0, 0, 96, 68); }
+    c.drawImage(thumbHall, 0, 0);
     c.fillStyle = SWT.isOn(HALL) ? 'rgba(40,70,52,.45)' : 'rgba(3,6,5,.86)'; c.fillRect(0, 0, 96, 68);
     k = c.createRadialGradient(48, 34, 22, 48, 34, 60); k.addColorStop(0, 'rgba(0,0,0,0)'); k.addColorStop(1, 'rgba(0,0,0,.8)');
     c.fillStyle = k; c.fillRect(0, 0, 96, 68);
@@ -416,6 +421,7 @@
     v = { scene: 'room', light: false, tv: true, turn: 0, mouth: false, unknown: false, noise: 0, mon: false };
     hooks = {};
     S.mount(HTML_ROOM);
+    dk = S.shade(q('.c2-dark'), darkRoom);
     S.hotspot(L404, [417, 440, 120, 140], '照明のスイッチ', function () {
       var on = SWT.toggle(L404, 'player'); A.se(on ? 'switch_on' : 'switch_off'); setRoomLight(on, true);
       S.hint(L404, false); if (hooks.light) hooks.light(on);

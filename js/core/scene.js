@@ -50,6 +50,33 @@
     var fn = taps[b.dataset.id]; if (fn) SW.guard(fn)();
   });
 
+  /* 暗さのレイヤー。
+     ぼかしの多い絵をそのまま画面に置くと、見回すたびに描き直しが起きて重くなる。
+     そこで、状態が変わったときだけ小さな画像（640x360）に描き、それを引きのばして重ねる。
+     build(状態) は SVG の中身（文字列）を返す関数。 */
+  S.shade = function (cv, build) {
+    var st = {}, tok = 0, ctx = cv.getContext('2d');
+    function render() {
+      var my = ++tok, im = new Image();
+      im.onload = function () {
+        if (my !== tok) return;
+        ctx.clearRect(0, 0, cv.width, cv.height); ctx.drawImage(im, 0, 0, cv.width, cv.height);
+      };
+      im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="' + cv.width + '" height="' + cv.height + '">' + build(st) + '</svg>');
+    }
+    ctx.fillStyle = '#06080e'; ctx.fillRect(0, 0, cv.width, cv.height);
+    render();
+    return { set: function (k, val) { if (st[k] === val) return; st[k] = val; render(); } };
+  };
+  /* 背景の絵を、小さな画像にして覚えておく（映像の中に部屋を映すときに使う） */
+  S.thumb = function (img, w, h, sx, sy, sw, sh) {
+    var c = document.createElement('canvas'); c.width = w; c.height = h;
+    function draw() { try { if (sw) c.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, w, h); else c.getContext('2d').drawImage(img, 0, 0, w, h); } catch (e) {} }
+    if (img.complete && img.naturalWidth) draw(); else img.addEventListener('load', draw);
+    return c;
+  };
+
   /* ドラッグで見回す */
   var down = null;
   stage.addEventListener('pointerdown', function (e) { down = { x: e.clientX, y: e.clientY, cx: cam.x, cy: cam.y }; dragged = false; });
