@@ -550,13 +550,11 @@
     await SW.wait(2400);
     await U.say(['廊下で、エレベーターの到着を告げる音がした。', '呼んだ覚えは、ない。']);
     await U.fade(1, 0);
-    await SW.wait(900);
-    A.se('boom');
+    await SW.wait(1400);
   }
 
   SW.chapters.ch02 = {
     no: 'CHAPTER 02', title: 'THE APARTMENT',
-    next: 'CHAPTER 03 — THE STATION',
     run: async function (from) {
       await U.fade(1, 0);
       snd = {};

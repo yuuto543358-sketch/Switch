@@ -483,8 +483,7 @@
       await U.fade(1, 0);
     }
     S.locked = false;
-    await SW.wait(900);
-    A.se('boom');
+    await SW.wait(1400);
   }
 
   /* ============================================================
@@ -493,7 +492,6 @@
   var ORDER = ['start', 'tv', 'ring'];
   SW.chapters.ch01 = {
     no: 'CHAPTER 01', title: 'FIRST SWITCH',
-    next: 'CHAPTER 02 — THE APARTMENT',
     run: async function (from) {
       var i = Math.max(0, ORDER.indexOf(from));
       await U.fade(1, 0);

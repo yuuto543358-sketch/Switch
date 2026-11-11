@@ -54,27 +54,34 @@
     }).catch(function (err) { if (err !== SW.ABORT) { console.error(err); showTitle(); } });
   }
 
+  /* 章が終わったら、区切りの画面を出さずに、そのまま次の章へつなげる。
+     「どのエンドになったか」を出すのは、物語の最後だけ。 */
   function finishChapter(ch) {
-    var id = SW.game.chapter, total = SW.switches.playerTotal();
+    var id = SW.game.chapter;
     var nextId = SW.ORDER[SW.ORDER.indexOf(id) + 1], hasNext = !!SW.chapters[nextId];
     SW.profile.clears[id] = (SW.profile.clears[id] || 0) + 1;
     SW.profile.snap[id] = JSON.parse(JSON.stringify({ flags: SW.game.flags, switches: SW.game.switches }));
     SW.saveProfile();
-    /* 次の章があれば、そこから「つづきから」で再開できるようにしておく */
-    if (hasNext) { SW.game.chapter = nextId; SW.game.checkpoint = SW.game.beat = 'start'; SW.saveGame(); }
-    else SW.clearSave();
-    if (ch.stop) ch.stop(); SW.scene.clear(); menuBtn.classList.remove('on');
+    if (ch.stop) ch.stop(); SW.scene.clear();
+    if (hasNext) {
+      SW.game.chapter = nextId; SW.game.checkpoint = SW.game.beat = 'start'; SW.saveGame();
+      return startChapter();
+    }
+    SW.clearSave(); menuBtn.classList.remove('on');
+    if (ch.ending) showEnding(ch.ending());      // 最終章：たどり着いたエンドを表示
+    else showEnding(null);                       // まだ先の章がない：「つづく」とだけ出す
+  }
 
-    endcard.dataset.ch = id;
-    endcard.querySelector('.e-ch').textContent = ch.no;
-    endcard.querySelector('.e-title').textContent = ch.title;
-    endcard.querySelector('.e-next').textContent = 'NEXT ▸ ' + ch.next + (hasNext ? '' : '（制作中）');
-    endcard.querySelector('[data-act="next"]').hidden = !hasNext;
+  /* ending = { no:'END 01', title:'NEW WORLD', lines:['…','…'] }  /  null なら制作中の案内 */
+  function showEnding(ending) {
+    var total = SW.switches.playerTotal();
+    endcard.querySelector('.e-ch').textContent = ending ? ending.no : '';
+    endcard.querySelector('.e-title').textContent = ending ? ending.title : 'TO BE CONTINUED';
+    endcard.querySelector('.e-end').textContent = ending ? '' : 'この先の物語は、制作中です';
     var log = endcard.querySelector('.e-log'), btns = endcard.querySelector('.e-menu');
-    log.textContent = ''; btns.classList.remove('on');
+    log.textContent = ''; log.hidden = !ending; btns.classList.remove('on');
     endcard.classList.add('on'); void endcard.offsetWidth; endcard.classList.add('show');
-    /* 操作はすべて記録されている、という小さな違和感を残す */
-    var text = '> INPUT LOG\n> ' + total + ' SWITCH OPERATIONS RECORDED.';
+    var text = ending ? (ending.lines || []).concat('> ' + total + ' SWITCH OPERATIONS RECORDED.').join('\n') : '';
     (async function () {
       await SW.wait(2600);
       for (var i = 1; i <= text.length; i++) { log.textContent = text.slice(0, i); await SW.wait(34); }
@@ -82,11 +89,8 @@
     })().catch(function () {});
   }
   endcard.querySelector('.e-menu').addEventListener('click', function (e) {
-    var act = e.target.dataset.act; if (!act) return;
-    A.se('tick');
-    if (act === 'next') startChapter();
-    else if (act === 'replay') { SW.newGame(endcard.dataset.ch); startChapter(); }
-    else showTitle();
+    if (!e.target.dataset.act) return;
+    A.se('tick'); showTitle();
   });
 
   /* ---------- チャプター選択 ---------- */
