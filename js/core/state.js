@@ -20,7 +20,7 @@
   /* ---- ゲーム1回分のデータ ---- */
   SW.game = null;
   var entry = null;   // 最後に通った「場面の入口」の記録
-  SW.ORDER = ['ch01', 'ch02', 'ch03', 'ch04', 'ch05'];     // 章の順番
+  SW.ORDER = ['ch01', 'ch02', 'ch03', 'ch04', 'ch05', 'ch06'];     // 章の順番
   /* 指定した章の最初から始める。前の章をクリアした時の記録を引き継ぐ */
   SW.newGame = function (chapter) {
     chapter = chapter || SW.ORDER[0];

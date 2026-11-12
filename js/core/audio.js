@@ -190,6 +190,18 @@
       var sp = filt('bandpass', 1200, 0.6, out);
       for (var i = 0; i < 4; i++) { var g = gain(0, sp); hit(g, t + i * 0.5, 0.14, 0.01, 0.42); osc('square', i % 2 ? 660 : 880, g, t + i * 0.5, t + i * 0.5 + 0.46); }
     },
+    /* 街の電気が落ちていく音 */
+    powerdown: function (t, out) {
+      var g = gain(0, out); hit(g, t, 0.5, 0.05, 3.4);
+      var f = filt('lowpass', 900, 1, g), o = osc('sawtooth', 180, f, t, t + 3.6);
+      o.frequency.exponentialRampToValueAtTime(24, t + 3.2); f.frequency.exponentialRampToValueAtTime(90, t + 3.2);
+      var g2 = gain(0, out); hit(g2, t, 0.25, 0.02, 2.4); src(brown, filt('lowpass', 300, 0.5, g2), t, 2.6);
+    },
+    /* 歩行者用信号の誘導音 */
+    pipo: function (t, out) {
+      var sp = filt('bandpass', 2400, 0.8, out);
+      [0, 0.3].forEach(function (d) { var g = gain(0, sp); hit(g, t + d, 0.12, 0.01, 0.12); var o = osc('sine', 2900, g, t + d, t + d + 0.16); o.frequency.exponentialRampToValueAtTime(2100, t + d + 0.12); });
+    },
     tick: function (t, out) { clickAt(t, out, 2.6, 0.1); },
     boom: function (t, out) {
       var g = gain(0, out); hit(g, t, 0.9, 0.01, 2.6);
