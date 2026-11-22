@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+<!-- SWITCH / CHAPTER 07 : SWITCH中枢室（系統スイッチが入った状態）。同じ構図の写真（1920x1080）に差し替え可能。 -->
+<defs>
+  <filter id="b2" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2"/></filter>
+  <filter id="b4" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="4"/></filter>
+  <filter id="b8" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="8"/></filter>
+  <filter id="b16" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="16"/></filter>
+  <filter id="b40" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="40"/></filter>
+  <filter id="grainF" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" seed="7"/><feColorMatrix values="0 0 0 0 0.5  0 0 0 0 0.5  0 0 0 0 0.5  0.9 0.9 0.9 0 -0.95"/></filter>
+  <filter id="stain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.004 0.012" numOctaves="3" seed="9"/><feColorMatrix values="0 0 0 0 0.1  0 0 0 0 0.1  0 0 0 0 0.08  1.4 0 0 0 -0.6"/></filter>
+  <filter id="hair" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="0.9 0.004" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.9 0 0 0 -0.35"/></filter>
+  <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2b3036"/><stop offset="1" stop-color="#1d2126"/></linearGradient>
+  <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#14171b"/><stop offset="1" stop-color="#23272d"/></linearGradient>
+  <linearGradient id="box" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#33373d"/><stop offset="1" stop-color="#1a1d21"/></linearGradient>
+  <radialGradient id="coreglow" cx="960" cy="430" r="430" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#bfe8d2" stop-opacity=".16"/><stop offset=".6" stop-color="#bfe8d2" stop-opacity=".05"/><stop offset="1" stop-color="#bfe8d2" stop-opacity="0"/></radialGradient>
+  <linearGradient id="aoB" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#05070a" stop-opacity=".55"/><stop offset="1" stop-color="#05070a" stop-opacity="0"/></linearGradient>
+</defs>
+<rect width="1920" height="1080" fill="url(#wall)"/><rect width="1920" height="1080" filter="url(#stain)" opacity=".3"/>
+<rect y="800" width="1920" height="280" fill="url(#floor)"/>
+<rect y="796" width="1920" height="4" fill="#0c0e10"/>
+<!-- モニター壁（画面の明かりはゲーム側） -->
+<g>
+  <rect x="138" y="208" width="384" height="224" rx="8" fill="#000" opacity=".35" filter="url(#b16)" transform="translate(0 10)"/>
+  <rect x="138" y="208" width="384" height="224" rx="8" fill="url(#box)"/><rect x="150" y="220" width="360" height="200" fill="#070a09"/>
+  <text x="168" y="458" font-family="sans-serif" font-size="15" fill="#8b9296">CAM 住宅街</text>
+  <rect x="138" y="488" width="384" height="224" rx="8" fill="#000" opacity=".35" filter="url(#b16)" transform="translate(0 10)"/>
+  <rect x="138" y="488" width="384" height="224" rx="8" fill="url(#box)"/><rect x="150" y="500" width="360" height="200" fill="#070a09"/>
+  <text x="168" y="738" font-family="sans-serif" font-size="15" fill="#8b9296">CAM 駅</text>
+  <rect x="1398" y="208" width="384" height="224" rx="8" fill="#000" opacity=".35" filter="url(#b16)" transform="translate(0 10)"/>
+  <rect x="1398" y="208" width="384" height="224" rx="8" fill="url(#box)"/><rect x="1410" y="220" width="360" height="200" fill="#070a09"/>
+  <text x="1428" y="458" font-family="sans-serif" font-size="15" fill="#8b9296">CAM 病院</text>
+  <rect x="1398" y="488" width="384" height="224" rx="8" fill="#000" opacity=".35" filter="url(#b16)" transform="translate(0 10)"/>
+  <rect x="1398" y="488" width="384" height="224" rx="8" fill="url(#box)"/><rect x="1410" y="500" width="360" height="200" fill="#070a09"/>
+  <text x="1428" y="738" font-family="sans-serif" font-size="15" fill="#8b9296">CAM 灯ヶ丘</text>
+</g>
+<!-- 中枢のリング（発光はゲーム側） -->
+<circle cx="960" cy="430" r="318" fill="none" stroke="#14171a" stroke-width="52"/>
+<circle cx="960" cy="430" r="318" fill="none" stroke="#3d434b" stroke-width="34"/>
+<circle cx="960" cy="430" r="318" fill="none" stroke="#59616b" stroke-width="3" stroke-dasharray="26 18"/>
+<circle cx="960" cy="430" r="238" fill="none" stroke="#2c3138" stroke-width="16"/>
+<circle cx="960" cy="430" r="150" fill="#101216" stroke="#3d434b" stroke-width="10"/>
+<g stroke="#2c3138" stroke-width="20"><path d="M960 112 V40 M960 748 V820 M642 430 H570 M1278 430 H1350"/></g>
+<g fill="#22262c"><rect x="880" y="30" width="160" height="60" rx="6"/><rect x="880" y="770" width="160" height="60" rx="6"/></g>
+<rect width="1920" height="1080" fill="url(#coreglow)"/>
+<!-- 時計の箱（文字はゲーム側） -->
+<rect x="1560" y="118" width="150" height="64" rx="5" fill="#101216"/><rect x="1560" y="118" width="150" height="2" fill="#4b4e53"/>
+<!-- 操作卓と系統スイッチの台（レバーはゲーム側） -->
+<rect x="716" y="706" width="488" height="220" fill="#000" opacity=".3" filter="url(#b16)" transform="translate(0 10)"/>
+<path d="M716 926 L748 716 H1172 L1204 926Z" fill="url(#box)"/><path d="M748 716H1172" stroke="#5b6167" stroke-width="2"/>
+<rect x="872" y="726" width="176" height="118" rx="5" fill="#7c1d15"/><rect x="872" y="726" width="176" height="118" rx="5" fill="none" stroke="#4a130d" stroke-width="2"/>
+<rect x="886" y="736" width="148" height="22" fill="#f6f4ea"/><text x="960" y="752" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="700" fill="#7a1f18">系 統　入／切</text>
+<!-- 「維持」ボタン（発光はゲーム側） -->
+<circle cx="1134" cy="794" r="30" fill="#22262c" stroke="#4b5157" stroke-width="3"/>
+<text x="1134" y="852" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#9aa0a4">維持</text>
+<rect y="880" width="1920" height="200" fill="url(#aoB)"/>
+<rect width="1920" height="1080" filter="url(#grainF)" opacity=".4"/>
+</svg>

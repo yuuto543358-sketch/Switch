@@ -17,7 +17,9 @@ SW.IMAGES = {
   ch05_dock: 'assets/bg/ch05_dock.svg',      // 第5章：実証プラント・搬入口
   ch05_control: 'assets/bg/ch05_control.svg',// 第5章：実証プラント・制御室
   ch06_cross: 'assets/bg/ch06_cross.svg',    // 第6章：駅前の交差点
-  ch06_memorial: 'assets/bg/ch06_memorial.svg' // 第6章：公園の慰霊碑
+  ch06_memorial: 'assets/bg/ch06_memorial.svg', // 第6章：公園の慰霊碑
+  ch07_entrance: 'assets/bg/ch07_entrance.svg', // 第7章：中央制御施設・エントランス
+  ch07_core: 'assets/bg/ch07_core.svg'       // 第7章：SWITCH中枢室
 };
 
 /* 音声ファイル。何も書かなければ、ゲームが自動で作る音（合成音）が鳴る。
