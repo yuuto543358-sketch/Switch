@@ -14,6 +14,7 @@
     menuBtn.classList.remove('on'); menu.classList.remove('on'); settings.classList.remove('on'); $('chapters').classList.remove('on');
     endcard.classList.remove('on', 'show');
     title.classList.remove('lit', 'flick'); tsw.setAttribute('aria-pressed', 'false');
+    if (SW.profile.sawEnd3) { title.classList.add('lit'); tsw.setAttribute('aria-pressed', 'true'); }   // END 03を見たあとは、タイトルの明かりが点いたままになる
     title.querySelector('[data-act="continue"]').hidden = !SW.hasSave();
     title.querySelector('[data-act="chapters"]').hidden = !SW.profile.clears.ch01;
     title.classList.add('on');

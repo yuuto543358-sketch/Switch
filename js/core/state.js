@@ -13,6 +13,7 @@
     clears: p.clears || {},          // 章ごとのクリア回数
     totalInputs: p.totalInputs || 0, // これまでに押したスイッチの総数
     titleToggles: p.titleToggles || 0,
+    sawEnd3: !!p.sawEnd3,            // END 03にたどり着いたか（タイトルの明かりが点いたままになる）
     snap: p.snap || {}               // 章をクリアした時点の記録（次の章の出発点になる）
   };
   SW.saveProfile = function () { write(PROFILE_KEY, SW.profile); };
